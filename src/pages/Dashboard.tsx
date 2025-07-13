@@ -14,10 +14,14 @@ import {
   User,
   BookOpen,
   FileText,
-  HelpCircle
+  HelpCircle,
+  Lightbulb,
+  Calendar,
+  MapPin
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface Message {
   id: string;
@@ -32,6 +36,22 @@ interface Chat {
   messages: Message[];
   lastMessage: Date;
 }
+
+// Pre-defined questions for OUI students
+const preQuestions = [
+  "What are the admission requirements for OUI?",
+  "How can I check my academic result online?",
+  "What is the current school calendar for this session?",
+  "How do I register for courses online?",
+  "What are the available scholarship opportunities?",
+  "How can I contact my academic advisor?",
+  "What is the process for hostel accommodation?",
+  "How do I pay my school fees online?",
+  "What are the graduation requirements for my program?",
+  "How can I access the digital library resources?",
+  "What support services are available for students?",
+  "How do I apply for industrial training placement?"
+];
 
 const Dashboard = () => {
   const [chats, setChats] = useState<Chat[]>([
@@ -58,8 +78,15 @@ const Dashboard = () => {
   
   const [activeChat, setActiveChat] = useState<string>("1");
   const [message, setMessage] = useState("");
+  const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  // Get 3 random pre-questions on component mount
+  useState(() => {
+    const shuffled = [...preQuestions].sort(() => 0.5 - Math.random());
+    setSelectedQuestions(shuffled.slice(0, 3));
+  });
 
   const currentChat = chats.find(chat => chat.id === activeChat);
 
@@ -108,6 +135,11 @@ const Dashboard = () => {
     setActiveChat(newChat.id);
   };
 
+  const handlePreQuestion = (question: string) => {
+    setMessage(question);
+    handleSendMessage();
+  };
+
   const handleLogout = () => {
     toast({
       title: "Goodbye!",
@@ -125,11 +157,14 @@ const Dashboard = () => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <GraduationCap className="h-6 w-6 text-accent" />
-              <span className="font-semibold">StudyMate AI</span>
+              <span className="font-semibold">OUI StudyMate</span>
             </div>
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
-              <LogOut className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center space-x-1">
+              <ThemeToggle />
+              <Button variant="ghost" size="icon" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           <Button 
             onClick={createNewChat}
@@ -199,7 +234,7 @@ const Dashboard = () => {
             <div className="p-4 border-b bg-background">
               <h2 className="text-lg font-semibold">{currentChat.title}</h2>
               <p className="text-sm text-muted-foreground">
-                AI Assistant for Final Year Students
+                AI Assistant for OUI Students
               </p>
             </div>
 
@@ -209,10 +244,28 @@ const Dashboard = () => {
                 {currentChat.messages.length === 0 ? (
                   <div className="text-center py-12">
                     <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Start a conversation</h3>
-                    <p className="text-muted-foreground">
-                      Ask me anything about your studies, research, or thesis work.
+                    <h3 className="text-lg font-semibold mb-2">Welcome to OUI StudyMate</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Your AI assistant for Oduduwa University Ipetumodu. Ask anything about your studies, courses, or university life.
                     </p>
+                    
+                    {/* Pre-defined Questions */}
+                    <div className="max-w-2xl mx-auto space-y-3">
+                      <p className="text-sm font-medium text-muted-foreground mb-4">Try asking:</p>
+                      <div className="grid gap-3">
+                        {selectedQuestions.map((question, index) => (
+                          <Button
+                            key={index}
+                            variant="outline"
+                            className="text-left h-auto p-4 justify-start whitespace-normal"
+                            onClick={() => handlePreQuestion(question)}
+                          >
+                            <Lightbulb className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm">{question}</span>
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   currentChat.messages.map((msg) => (
@@ -243,7 +296,7 @@ const Dashboard = () => {
               <div className="max-w-4xl mx-auto">
                 <div className="flex space-x-2">
                   <Input
-                    placeholder="Ask me anything about your studies..."
+                    placeholder="Ask me anything about OUI..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}

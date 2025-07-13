@@ -21,7 +21,7 @@ const Landing = () => {
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <GraduationCap className="h-8 w-8 text-accent" />
-            <span className="text-xl font-bold text-foreground">StudyMate AI</span>
+            <span className="text-xl font-bold text-foreground">OUI StudyMate</span>
           </div>
           <div className="flex items-center space-x-4">
             <Link to="/login">
@@ -45,14 +45,14 @@ const Landing = () => {
               </div>
               
               <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-foreground">
-                Your Final Year
+                Your OUI
                 <span className="text-accent block">Study Companion</span>
               </h1>
               
               <p className="text-xl text-muted-foreground leading-relaxed max-w-md">
-                Get instant help with research, assignments, and thesis work. 
-                StudyMate AI understands your academic challenges and provides 
-                personalized guidance to help you succeed.
+                Get instant help with academic questions, course information, and university procedures. 
+                OUI StudyMate AI is designed specifically for Oduduwa University Ipetumodu students 
+                to help you succeed in your academic journey.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4">
@@ -87,10 +87,10 @@ const Landing = () => {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
-              Designed for Final Year Students
+              Designed for OUI Students
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Everything you need to excel in your final year, from research to thesis defense.
+              Everything you need to succeed at Oduduwa University Ipetumodu, from academic support to university navigation.
             </p>
           </div>
           
@@ -100,10 +100,10 @@ const Landing = () => {
                 <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
                   <BookOpenCheck className="w-8 h-8 text-accent" />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground">Research Assistance</h3>
+                <h3 className="text-xl font-semibold text-foreground">Academic Support</h3>
                 <p className="text-muted-foreground">
-                  Get help finding relevant sources, understanding complex topics, 
-                  and structuring your research methodology.
+                  Get assistance with coursework, assignments, research methodologies, 
+                  and academic planning for all programs at OUI.
                 </p>
               </CardContent>
             </Card>
@@ -113,10 +113,10 @@ const Landing = () => {
                 <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
                   <Target className="w-8 h-8 text-accent" />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground">Thesis Support</h3>
+                <h3 className="text-xl font-semibold text-foreground">University Navigation</h3>
                 <p className="text-muted-foreground">
-                  From proposal to defense, get guidance on structuring, 
-                  writing, and refining your thesis work.
+                  Get help with course registration, academic policies, 
+                  hostel accommodation, and accessing university resources.
                 </p>
               </CardContent>
             </Card>
@@ -142,10 +142,10 @@ const Landing = () => {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto space-y-8">
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
-              Ready to Ace Your Final Year?
+              Ready to Excel at OUI?
             </h2>
             <p className="text-xl text-muted-foreground">
-              Join thousands of students who are already using StudyMate AI 
+              Join your fellow OUI students who are already using StudyMate AI 
               to achieve their academic goals.
             </p>
             <Link to="/signup">
@@ -164,10 +164,10 @@ const Landing = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2">
               <GraduationCap className="h-6 w-6 text-accent" />
-              <span className="font-semibold text-foreground">StudyMate AI</span>
+              <span className="font-semibold text-foreground">OUI StudyMate</span>
             </div>
             <p className="text-sm text-muted-foreground">
-              © 2024 StudyMate AI. Empowering students to succeed.
+              © 2024 OUI StudyMate AI. Empowering OUI students to succeed.
             </p>
           </div>
         </div>
