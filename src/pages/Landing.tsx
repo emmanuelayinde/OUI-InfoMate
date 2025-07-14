@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
@@ -13,6 +12,7 @@ import {
   Target
 } from "lucide-react";
 import heroImage from "@/assets/hero-image.jpg";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const Landing = () => {
   return (
@@ -25,6 +25,7 @@ const Landing = () => {
             <span className="text-xl font-bold text-foreground">OUI InfoMate</span>
           </div>
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <Link to="/login">
               <Button variant="ghost">Sign In</Button>
             </Link>

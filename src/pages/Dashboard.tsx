@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,19 +10,14 @@ import {
   Send, 
   GraduationCap, 
   Plus, 
-  Settings,
   LogOut,
   User,
-  BookOpen,
-  FileText,
-  HelpCircle,
-  Lightbulb,
-  Calendar,
-  MapPin
+  Lightbulb
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { formatMarkdown } from "@/utils/markdown";
 
 interface Message {
   id: string;
@@ -253,25 +249,16 @@ const Dashboard = () => {
           </div>
         </ScrollArea>
 
-        {/* Quick Actions */}
+        {/* User Info */}
         <div className="p-4 border-t">
-          <div className="grid grid-cols-2 gap-2">
-            <Button variant="ghost" size="sm" className="justify-start">
-              <BookOpen className="h-4 w-4 mr-2" />
-              Research
-            </Button>
-            <Button variant="ghost" size="sm" className="justify-start">
-              <FileText className="h-4 w-4 mr-2" />
-              Writing
-            </Button>
-            <Button variant="ghost" size="sm" className="justify-start">
-              <HelpCircle className="h-4 w-4 mr-2" />
-              Q&A
-            </Button>
-            <Button variant="ghost" size="sm" className="justify-start">
-              <Settings className="h-4 w-4 mr-2" />
-              Settings
-            </Button>
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
+              <User className="h-5 w-5 text-accent" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">John Doe</p>
+              <p className="text-xs text-muted-foreground truncate">john.doe@student.oui.edu.ng</p>
+            </div>
           </div>
         </div>
       </div>
@@ -330,11 +317,15 @@ const Dashboard = () => {
                             : 'bg-chat-assistant text-chat-assistant-foreground border'
                         }`}
                       >
-                        <div className="whitespace-pre-wrap">{msg.content}</div>
+                        <div 
+                          className="whitespace-pre-wrap" 
+                          dangerouslySetInnerHTML={{ __html: formatMarkdown(msg.content) }}
+                        />
                         <div className="text-xs opacity-70 mt-2">
                           {msg.timestamp.toLocaleString('en-US', {
                             month: 'short',
                             day: 'numeric',
+                            year: 'numeric',
                             hour: 'numeric',
                             minute: '2-digit',
                             hour12: true

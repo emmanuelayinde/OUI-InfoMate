@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { GraduationCap, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const Signup = () => {
   const [name, setName] = useState("");
@@ -37,7 +39,7 @@ const Signup = () => {
       if (name && email && password) {
         toast({
           title: "Account created!",
-          description: "Welcome to StudyMate AI. Let's get started!",
+          description: "Welcome to OUI InfoMate. Let's get started!",
         });
         navigate("/dashboard");
       } else {
@@ -53,12 +55,16 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      
       <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="text-center">
           <Link to="/" className="inline-flex items-center space-x-2 text-2xl font-bold text-foreground">
             <GraduationCap className="h-8 w-8 text-accent" />
-            <span>StudyMate AI</span>
+            <span>OUI InfoMate</span>
           </Link>
         </div>
 
@@ -67,7 +73,7 @@ const Signup = () => {
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">Create your account</CardTitle>
             <CardDescription>
-              Join thousands of students succeeding with AI assistance
+              Join OUI students getting instant school information
             </CardDescription>
           </CardHeader>
           <CardContent>
