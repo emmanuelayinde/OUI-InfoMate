@@ -53,26 +53,67 @@ const preQuestions = [
   "How do I apply for industrial training placement?"
 ];
 
+// Helper function to group chats by date
+const groupChatsByDate = (chats: Chat[]) => {
+  const groups: { [key: string]: Chat[] } = {};
+  
+  chats.forEach(chat => {
+    const dateKey = chat.lastMessage.toDateString();
+    if (!groups[dateKey]) {
+      groups[dateKey] = [];
+    }
+    groups[dateKey].push(chat);
+  });
+  
+  return groups;
+};
+
+// Helper function to format date for grouping
+const formatDateGroup = (dateString: string) => {
+  const date = new Date(dateString);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  if (date.toDateString() === today.toDateString()) {
+    return "Today";
+  } else if (date.toDateString() === yesterday.toDateString()) {
+    return "Yesterday";
+  } else {
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  }
+};
+
 const Dashboard = () => {
   const [chats, setChats] = useState<Chat[]>([
     {
       id: "1",
-      title: "Thesis Research Methods",
+      title: "OUI Admission Requirements",
       messages: [
         {
           id: "1",
-          content: "Can you help me understand different research methodologies for my thesis?",
+          content: "What are the admission requirements for OUI?",
           sender: "user",
           timestamp: new Date()
         },
         {
           id: "2",
-          content: "I'd be happy to help you understand research methodologies! There are several approaches you can consider for your thesis, depending on your field and research questions:\n\n**Quantitative Research:**\n- Surveys and questionnaires\n- Experiments\n- Statistical analysis\n\n**Qualitative Research:**\n- Interviews\n- Focus groups\n- Case studies\n- Ethnographic studies\n\n**Mixed Methods:**\n- Combines both quantitative and qualitative approaches\n\nWhat's your field of study and research topic? This will help me provide more specific guidance.",
+          content: "Here are the admission requirements for Oduduwa University Ipetumodu (OUI):\n\n**UTME Requirements:**\n- Minimum of 5 O'Level credits including English and Mathematics\n- JAMB UTME score (varies by course)\n- Post-UTME screening\n\n**Direct Entry:**\n- National Diploma (ND) with Upper Credit\n- NCE with minimum of Merit\n- A-Level with 2 passes\n\n**International Students:**\n- WAEC/NECO equivalent\n- TOEFL/IELTS for non-English speaking countries\n\nWould you like specific information about requirements for your intended course?",
           sender: "assistant",
           timestamp: new Date()
         }
       ],
       lastMessage: new Date()
+    },
+    {
+      id: "2", 
+      title: "School Fee Payment",
+      messages: [],
+      lastMessage: new Date(Date.now() - 86400000) // Yesterday
     }
   ]);
   
@@ -157,7 +198,7 @@ const Dashboard = () => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <GraduationCap className="h-6 w-6 text-accent" />
-              <span className="font-semibold">OUI StudyMate</span>
+              <span className="font-semibold">OUI InfoMate</span>
             </div>
             <div className="flex items-center space-x-1">
               <ThemeToggle />
@@ -178,27 +219,36 @@ const Dashboard = () => {
 
         {/* Chat History */}
         <ScrollArea className="flex-1 p-4">
-          <div className="space-y-2">
-            {chats.map((chat) => (
-              <Card 
-                key={chat.id}
-                className={`cursor-pointer transition-colors hover:bg-accent/10 ${
-                  activeChat === chat.id ? 'bg-accent/20 border-accent' : ''
-                }`}
-                onClick={() => setActiveChat(chat.id)}
-              >
-                <CardContent className="p-3">
-                  <div className="flex items-start space-x-2">
-                    <MessageSquare className="h-4 w-4 mt-1 text-muted-foreground" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{chat.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {chat.messages.length} messages
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+          <div className="space-y-4">
+            {Object.entries(groupChatsByDate(chats)).map(([dateKey, dateChats]) => (
+              <div key={dateKey}>
+                <h4 className="text-xs font-medium text-muted-foreground mb-2 px-1">
+                  {formatDateGroup(dateKey)}
+                </h4>
+                <div className="space-y-2">
+                  {dateChats.map((chat) => (
+                    <Card 
+                      key={chat.id}
+                      className={`cursor-pointer transition-colors hover:bg-accent/10 ${
+                        activeChat === chat.id ? 'bg-accent/20 border-accent' : ''
+                      }`}
+                      onClick={() => setActiveChat(chat.id)}
+                    >
+                      <CardContent className="p-3">
+                        <div className="flex items-start space-x-2">
+                          <MessageSquare className="h-4 w-4 mt-1 text-muted-foreground" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{chat.title}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {chat.messages.length} messages
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </ScrollArea>
@@ -244,9 +294,9 @@ const Dashboard = () => {
                 {currentChat.messages.length === 0 ? (
                   <div className="text-center py-12">
                     <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">Welcome to OUI StudyMate</h3>
+                    <h3 className="text-lg font-semibold mb-2">Welcome to OUI InfoMate</h3>
                     <p className="text-muted-foreground mb-6">
-                      Your AI assistant for Oduduwa University Ipetumodu. Ask anything about your studies, courses, or university life.
+                      Your AI assistant for Oduduwa University Ipetumodu. Get instant information about university services, procedures, and campus life.
                     </p>
                     
                     {/* Pre-defined Questions */}
@@ -282,7 +332,13 @@ const Dashboard = () => {
                       >
                         <div className="whitespace-pre-wrap">{msg.content}</div>
                         <div className="text-xs opacity-70 mt-2">
-                          {msg.timestamp.toLocaleTimeString()}
+                          {msg.timestamp.toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                          })}
                         </div>
                       </div>
                     </div>
