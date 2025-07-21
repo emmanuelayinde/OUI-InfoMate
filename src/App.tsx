@@ -8,9 +8,9 @@ import { ChatLayout } from "./components";
 import {
   ChatPage,
   LandingPage,
-  LoginPage,
   NotFoundPage,
   RegisterPage,
+  SignInPage,
 } from "./pages";
 
 const queryClient = new QueryClient();
@@ -23,7 +23,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<SignInPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route
             path="/chat"
