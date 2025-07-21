@@ -25,7 +25,7 @@ const LandingPage = () => {
           <div className="flex items-center space-x-2">
             <GraduationCap className="h-6 w-6 md:h-8 md:w-8 text-accent" />
             <span className="text-lg md:text-xl font-bold text-foreground">
-              OUI InfoMate
+              OUI Assistant
             </span>
           </div>
           <div className="flex items-center space-x-2 md:space-x-4">
@@ -64,7 +64,7 @@ const LandingPage = () => {
 
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
                 Get instant answers about school policies, procedures,
-                facilities, and services. OUI InfoMate AI is designed
+                facilities, and services. OUI Assistant AI is designed
                 specifically for Oduduwa University Ipetumodu students to help
                 you navigate university life with ease.
               </p>
@@ -182,11 +182,11 @@ const LandingPage = () => {
             <div className="flex items-center space-x-2">
               <GraduationCap className="h-5 w-5 md:h-6 md:w-6 text-accent" />
               <span className="text-sm md:text-base font-semibold text-foreground">
-                OUI InfoMate
+                OUI Assistant
               </span>
             </div>
             <p className="text-xs md:text-sm text-muted-foreground text-center md:text-right">
-              © 2025 OUI InfoMate AI. Your guide to OUI information and
+              © 2025 OUI Assistant AI. Your guide to OUI information and
               services.
             </p>
           </div>

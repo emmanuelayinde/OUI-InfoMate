@@ -45,5 +45,8 @@ export interface IChatState {
   setActiveChat: (chatId: string | number) => void;
   createNewChat: () => void;
   addMessageToActiveChat: (chatId: string, message: Message) => void;
-  updateChat: (chatId: string, response: ChatResponse) => void;
+  updateChat: (
+    chatId: string,
+    response: ChatResponse | ChatWithMessages
+  ) => void;
 }

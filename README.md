@@ -1,8 +1,8 @@
-# OUI InfoMate Frontend
+# OUI Assistant Frontend
 
 A modern, responsive React application built with TypeScript that provides an AI-powered chatbot interface for Oduduwa University Ipetumodu (OUI) students. Get instant information about university services, procedures, and campus life through an intuitive chat interface.
 
-![OUI InfoMate](https://img.shields.io/badge/React-18.3.1-blue.svg)
+![OUI Assistant](https://img.shields.io/badge/React-18.3.1-blue.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5.3-blue.svg)
 ![Vite](https://img.shields.io/badge/Vite-5.4.1-yellow.svg)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.4.11-green.svg)
@@ -196,7 +196,7 @@ Create a `.env` file in the root directory:
 VITE_BASE_API_URL=http://localhost:8000
 
 # Optional: Additional configuration
-VITE_APP_NAME=OUI InfoMate
+VITE_APP_NAME=OUI Assistant
 VITE_APP_VERSION=1.0.0
 ```
 

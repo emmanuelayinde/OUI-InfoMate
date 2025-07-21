@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import {
-    GraduationCap,
-    LogOut,
-    MessageSquare,
-    Plus,
-    User,
-    X,
+  GraduationCap,
+  LogOut,
+  MessageSquare,
+  Plus,
+  User,
+  X,
 } from "lucide-react";
 import { useEffect } from "react";
 
@@ -40,7 +40,13 @@ const formatDateGroup = (dateString: string) => {
 const groupChatsByDate = (chats: ChatHistory[]) => {
   const groups: { [key: string]: ChatHistory[] } = {};
 
-  chats.forEach((chat) => {
+  // Sort chats by updated_at in descending order (latest first)
+  const sortedChats = [...chats].sort(
+    (a, b) =>
+      new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+  );
+
+  sortedChats.forEach((chat) => {
     const dateKey = new Date(chat.updated_at).toDateString();
     if (!groups[dateKey]) {
       groups[dateKey] = [];
@@ -103,7 +109,7 @@ const Sidebar = ({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <GraduationCap className="h-6 w-6 text-accent" />
-            <span className="font-semibold text-sm">OUI InfoMate</span>
+            <span className="font-semibold text-sm">OUI Assistant</span>
           </div>
           <div className="flex items-center space-x-1">
             <ThemeToggle />
@@ -129,8 +135,12 @@ const Sidebar = ({
       {/* Chat History */}
       <ScrollArea className="flex-1 p-4">
         <div className="space-y-4">
-          {Object.entries(groupChatsByDate(chatHistory)).map(
-            ([dateKey, dateChats]) => (
+          {Object.entries(groupChatsByDate(chatHistory))
+            .sort(
+              ([dateKeyA], [dateKeyB]) =>
+                new Date(dateKeyB).getTime() - new Date(dateKeyA).getTime()
+            )
+            .map(([dateKey, dateChats]) => (
               <div key={dateKey}>
                 <h4 className="text-xs font-medium text-muted-foreground mb-2 px-1">
                   {formatDateGroup(dateKey)}
@@ -140,7 +150,7 @@ const Sidebar = ({
                     <Card
                       key={chat.id}
                       className={`cursor-pointer transition-colors hover:bg-accent/10 ${
-                        activeChatId === chat.id
+                        activeChatId == chat.id
                           ? "bg-accent/20 border-accent"
                           : ""
                       }`}
@@ -166,8 +176,7 @@ const Sidebar = ({
                   ))}
                 </div>
               </div>
-            )
-          )}
+            ))}
         </div>
       </ScrollArea>
 

@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   GraduationCap,
   Lightbulb,
@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { getAIResponseApi } from "@/api";
+import { getAIResponseApi, getChatMessagesApi } from "@/api";
 import { ChatSidebar, Loader } from "@/components";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
@@ -99,8 +99,6 @@ const ChatPage = () => {
       setMessage("");
     },
     onError: (error) => {
-      console.error("Error sending message:", error);
-      // Safely extract error message if error is an AxiosError, otherwise use default
       const errorMessage =
         (typeof error === "object" &&
           error !== null &&
@@ -114,6 +112,23 @@ const ChatPage = () => {
       });
     },
   });
+
+  // Get Chat By ID
+  const { data: chatData } = useQuery({
+    queryKey: ["chatById", activeChatId],
+    queryFn: async () => await getChatMessagesApi(String(activeChatId)),
+    enabled: !!activeChatId,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+
+  console.log("Chat Data:", chatData);
+
+  useEffect(() => {
+    if (chatData) {
+      updateChat(String(activeChatId), chatData);
+    }
+  }, [chatData, activeChatId, updateChat]);
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
@@ -181,7 +196,7 @@ const ChatPage = () => {
                   </Button>
                   <div className="flex-1 min-w-0">
                     <h2 className="text-lg font-semibold truncate">
-                      {currentChat.title}
+                      {currentChat.title}?
                     </h2>
                     <p className="text-sm text-muted-foreground">
                       AI Assistant for OUI Students
@@ -196,11 +211,11 @@ const ChatPage = () => {
               {/* Messages */}
               <ScrollArea className="flex-1 p-4">
                 <div className="space-y-6 max-w-4xl mx-auto">
-                  {currentChat.messages.length === 0 ? (
+                  {currentChat?.messages?.length === 0 ? (
                     <div className="text-center py-8 md:py-12">
                       <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                       <h3 className="text-lg font-semibold mb-2">
-                        Welcome to OUI InfoMate
+                        Welcome to OUI Assistant
                       </h3>
                       <p className="text-muted-foreground mb-6 px-4">
                         Your AI assistant for Oduduwa University Ipetumodu. Get
@@ -229,8 +244,8 @@ const ChatPage = () => {
                       </div>
                     </div>
                   ) : (
-                    currentChat.messages
-                      .filter((msg) => msg.role !== "system")
+                    currentChat?.messages
+                      ?.filter((msg) => msg.role !== "system")
                       .sort((a, b) => a.id - b.id)
                       .map((msg) => (
                         <div
@@ -356,7 +371,7 @@ const ChatPage = () => {
                 <div className="text-center py-8 md:py-12">
                   <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-lg font-semibold mb-2">
-                    Welcome to OUI InfoMate
+                    Welcome to OUI Assistant
                   </h3>
                   <p className="text-muted-foreground mb-6 px-4">
                     Your AI assistant for Oduduwa University Ipetumodu. Get

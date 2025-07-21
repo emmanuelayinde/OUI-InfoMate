@@ -91,7 +91,7 @@ const SignInPage = () => {
             className="inline-flex items-center space-x-2 text-2xl font-bold text-foreground"
           >
             <GraduationCap className="h-8 w-8 text-accent" />
-            <span>OUI InfoMate</span>
+            <span>OUI Assistant</span>
           </Link>
         </div>
 
