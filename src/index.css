@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,9 +18,9 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 217 33% 17%;
-    --primary-foreground: 210 40% 98%;
-    --primary-hover: 217 33% 24%;
+    --primary: 158 64% 52%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 158 64% 45%;
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -39,11 +40,11 @@ All colors MUST be HSL.
     --ring: 158 64% 52%;
 
     /* Custom design tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(217 33% 17%) 0%, hsl(217 33% 24%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(158 64% 45%) 100%);
     --gradient-accent: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(158 64% 45%) 100%);
-    --shadow-soft: 0 4px 6px -1px hsl(217 33% 17% / 0.08), 0 2px 4px -1px hsl(217 33% 17% / 0.06);
-    --shadow-medium: 0 10px 15px -3px hsl(217 33% 17% / 0.1), 0 4px 6px -2px hsl(217 33% 17% / 0.05);
-    --shadow-large: 0 25px 50px -12px hsl(217 33% 17% / 0.25);
+    --shadow-soft: 0 4px 6px -1px hsl(158 64% 52% / 0.08), 0 2px 4px -1px hsl(158 64% 52% / 0.06);
+    --shadow-medium: 0 10px 15px -3px hsl(158 64% 52% / 0.1), 0 4px 6px -2px hsl(158 64% 52% / 0.05);
+    --shadow-large: 0 25px 50px -12px hsl(158 64% 52% / 0.25);
     
     --chat-bg: 248 250% 99%;
     --chat-user: 158 64% 52%;
@@ -54,20 +55,13 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 158 64% 52%;
   }
 
   .dark {
@@ -80,9 +74,9 @@ All colors MUST be HSL.
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 217 33% 24%;
-    --primary-foreground: 210 40% 98%;
-    --primary-hover: 217 33% 30%;
+    --primary: 158 64% 52%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 158 64% 45%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -90,35 +84,35 @@ All colors MUST be HSL.
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 158 64% 45%;
+    --accent: 158 64% 52%;
     --accent-foreground: 0 0% 100%;
-    --accent-hover: 158 64% 52%;
+    --accent-hover: 158 64% 45%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 158 64% 45%;
+    --ring: 158 64% 52%;
 
     /* Dark mode custom tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(217 33% 24%) 0%, hsl(217 33% 30%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(158 64% 45%) 0%, hsl(158 64% 52%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(158 64% 45%) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(158 64% 45%) 100%);
     
     --chat-bg: 217.2 32.6% 15%;
-    --chat-user: 158 64% 45%;
+    --chat-user: 158 64% 52%;
     --chat-user-foreground: 0 0% 100%;
     --chat-assistant: 217.2 32.6% 17.5%;
     --chat-assistant-foreground: 210 40% 98%;
 
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary: 158 64% 52%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 158 64% 52%;
   }
 }
 
