@@ -18,7 +18,7 @@ import { Eye, EyeOff, GraduationCap } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-const Signup = () => {
+const Register = () => {
   const [formData, setFormData] = useState<IRegisterCredentials>({
     first_name: "",
     last_name: "",
@@ -234,4 +234,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Register;
