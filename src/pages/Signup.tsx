@@ -24,22 +24,24 @@ const Signup = () => {
     e.preventDefault();
     setLoading(true);
 
+    if (password !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords don't match.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
     // Simulate signup - in real app, this would connect to Supabase
     setTimeout(() => {
-      if (name && email && password && confirmPassword) {
-        if (password === confirmPassword) {
-          toast({
-            title: "Account created!",
-            description: "Welcome to OUI InfoMate! You've been signed up successfully.",
-          });
-          navigate("/dashboard");
-        } else {
-          toast({
-            title: "Error",
-            description: "Passwords do not match.",
-            variant: "destructive",
-          });
-        }
+      if (name && email && password) {
+        toast({
+          title: "Account created!",
+          description: "Welcome to OUI InfoMate. Let's get started!",
+        });
+        navigate("/dashboard");
       } else {
         toast({
           title: "Error",
@@ -57,27 +59,27 @@ const Signup = () => {
         <ThemeToggle />
       </div>
       
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-md space-y-8">
         {/* Logo */}
         <div className="text-center">
-          <Link to="/" className="inline-flex items-center space-x-2 text-xl sm:text-2xl font-bold text-foreground">
-            <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 text-accent" />
+          <Link to="/" className="inline-flex items-center space-x-2 text-2xl font-bold text-foreground">
+            <GraduationCap className="h-8 w-8 text-accent" />
             <span>OUI InfoMate</span>
           </Link>
         </div>
 
         {/* Signup Form */}
-        <Card className="shadow-large border-0 mx-auto">
-          <CardHeader className="text-center px-4 sm:px-6">
-            <CardTitle className="text-xl sm:text-2xl">Create your account</CardTitle>
-            <CardDescription className="text-sm sm:text-base">
-              Sign up to get started with OUI information and assistance
+        <Card className="shadow-large border-0">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">Create your account</CardTitle>
+            <CardDescription>
+              Join OUI students getting instant school information
             </CardDescription>
           </CardHeader>
-          <CardContent className="px-4 sm:px-6">
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-sm">Full Name</Label>
+                <Label htmlFor="name">Full Name</Label>
                 <Input
                   id="name"
                   type="text"
@@ -85,12 +87,11 @@ const Signup = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  className="text-sm sm:text-base"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm">Email</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -98,12 +99,11 @@ const Signup = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="text-sm sm:text-base"
                 />
               </div>
               
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm">Password</Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -112,7 +112,6 @@ const Signup = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
-                    className="text-sm sm:text-base pr-10"
                   />
                   <Button
                     type="button"
@@ -131,7 +130,7 @@ const Signup = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="text-sm">Confirm Password</Label>
+                <Label htmlFor="confirmPassword">Confirm Password</Label>
                 <div className="relative">
                   <Input
                     id="confirmPassword"
@@ -140,7 +139,6 @@ const Signup = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="text-sm sm:text-base pr-10"
                   />
                   <Button
                     type="button"
@@ -160,15 +158,15 @@ const Signup = () => {
 
               <Button 
                 type="submit" 
-                className="w-full text-sm sm:text-base" 
-                variant="default"
+                className="w-full" 
+                variant="hero"
                 disabled={loading}
               >
                 {loading ? "Creating account..." : "Create account"}
               </Button>
             </form>
 
-            <div className="mt-4 sm:mt-6 text-center text-sm">
+            <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">Already have an account? </span>
               <Link to="/login" className="text-accent hover:text-accent-hover font-medium">
                 Sign in

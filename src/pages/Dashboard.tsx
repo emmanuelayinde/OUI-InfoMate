@@ -4,14 +4,24 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sidebar, SidebarContent, SidebarHeader, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { MessageCircle, Send, Plus, GraduationCap, User, Mail } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { 
+  MessageSquare, 
+  Send, 
+  GraduationCap, 
+  Plus, 
+  LogOut,
+  User,
+  Lightbulb
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { formatMarkdown } from "@/utils/markdown";
 
 interface Message {
   id: string;
-  text: string;
+  content: string;
   sender: "user" | "assistant";
   timestamp: Date;
 }
@@ -23,273 +33,344 @@ interface Chat {
   lastMessage: Date;
 }
 
-const Dashboard = () => {
-  const [chats, setChats] = useState<Chat[]>([]);
-  const [currentChatId, setCurrentChatId] = useState<string | null>(null);
-  const [inputMessage, setInputMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+// Pre-defined questions for OUI students
+const preQuestions = [
+  "What are the admission requirements for OUI?",
+  "How can I check my academic result online?",
+  "What is the current school calendar for this session?",
+  "How do I register for courses online?",
+  "What are the available scholarship opportunities?",
+  "How can I contact my academic advisor?",
+  "What is the process for hostel accommodation?",
+  "How do I pay my school fees online?",
+  "What are the graduation requirements for my program?",
+  "How can I access the digital library resources?",
+  "What support services are available for students?",
+  "How do I apply for industrial training placement?"
+];
 
-  // Mock user data
-  const user = {
-    name: "John Doe",
-    email: "john.doe@student.oui.edu"
-  };
-
-  const currentChat = chats.find(chat => chat.id === currentChatId);
-
-  const createNewChat = () => {
-    const newChat: Chat = {
-      id: Date.now().toString(),
-      title: "New Chat",
-      messages: [],
-      lastMessage: new Date()
-    };
-    setChats(prev => [newChat, ...prev]);
-    setCurrentChatId(newChat.id);
-  };
-
-  const sendMessage = async () => {
-    if (!inputMessage.trim()) return;
-    
-    let chatToUpdate = currentChat;
-    
-    // If no current chat, create one
-    if (!chatToUpdate) {
-      const newChat: Chat = {
-        id: Date.now().toString(),
-        title: inputMessage.length > 30 ? inputMessage.substring(0, 30) + "..." : inputMessage,
-        messages: [],
-        lastMessage: new Date()
-      };
-      setChats(prev => [newChat, ...prev]);
-      setCurrentChatId(newChat.id);
-      chatToUpdate = newChat;
+// Helper function to group chats by date
+const groupChatsByDate = (chats: Chat[]) => {
+  const groups: { [key: string]: Chat[] } = {};
+  
+  chats.forEach(chat => {
+    const dateKey = chat.lastMessage.toDateString();
+    if (!groups[dateKey]) {
+      groups[dateKey] = [];
     }
+    groups[dateKey].push(chat);
+  });
+  
+  return groups;
+};
 
-    const userMessage: Message = {
+// Helper function to format date for grouping
+const formatDateGroup = (dateString: string) => {
+  const date = new Date(dateString);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  if (date.toDateString() === today.toDateString()) {
+    return "Today";
+  } else if (date.toDateString() === yesterday.toDateString()) {
+    return "Yesterday";
+  } else {
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  }
+};
+
+const Dashboard = () => {
+  const [chats, setChats] = useState<Chat[]>([
+    {
+      id: "1",
+      title: "OUI Admission Requirements",
+      messages: [
+        {
+          id: "1",
+          content: "What are the admission requirements for OUI?",
+          sender: "user",
+          timestamp: new Date()
+        },
+        {
+          id: "2",
+          content: "Here are the admission requirements for Oduduwa University Ipetumodu (OUI):\n\n**UTME Requirements:**\n- Minimum of 5 O'Level credits including English and Mathematics\n- JAMB UTME score (varies by course)\n- Post-UTME screening\n\n**Direct Entry:**\n- National Diploma (ND) with Upper Credit\n- NCE with minimum of Merit\n- A-Level with 2 passes\n\n**International Students:**\n- WAEC/NECO equivalent\n- TOEFL/IELTS for non-English speaking countries\n\nWould you like specific information about requirements for your intended course?",
+          sender: "assistant",
+          timestamp: new Date()
+        }
+      ],
+      lastMessage: new Date()
+    },
+    {
+      id: "2", 
+      title: "School Fee Payment",
+      messages: [],
+      lastMessage: new Date(Date.now() - 86400000) // Yesterday
+    }
+  ]);
+  
+  const [activeChat, setActiveChat] = useState<string>("1");
+  const [message, setMessage] = useState("");
+  const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Get 3 random pre-questions on component mount
+  useState(() => {
+    const shuffled = [...preQuestions].sort(() => 0.5 - Math.random());
+    setSelectedQuestions(shuffled.slice(0, 3));
+  });
+
+  const currentChat = chats.find(chat => chat.id === activeChat);
+
+  const handleSendMessage = () => {
+    if (!message.trim()) return;
+
+    const newMessage: Message = {
       id: Date.now().toString(),
-      text: inputMessage,
+      content: message,
       sender: "user",
       timestamp: new Date()
     };
 
-    // Add user message
-    setChats(prev => prev.map(chat => 
-      chat.id === chatToUpdate!.id 
-        ? { ...chat, messages: [...chat.messages, userMessage], lastMessage: new Date() }
-        : chat
-    ));
-
-    setInputMessage("");
-    setIsLoading(true);
-
     // Simulate AI response
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        text: `I understand you're asking about "${inputMessage}". Here's what I can help you with:
+    const aiResponse: Message = {
+      id: (Date.now() + 1).toString(),
+      content: "I understand your question. Let me help you with that. This is a simulated response - in a real application, this would connect to an AI service to provide personalized academic assistance.",
+      sender: "assistant",
+      timestamp: new Date()
+    };
 
-**Academic Information:**
-- Course requirements and prerequisites
-- Academic calendar and important dates
-- Grading policies and procedures
-
-**Student Services:**
-- Campus resources and facilities
-- Financial aid and scholarships
-- Student support services
-
-**Campus Life:**
-- Student organizations and activities
-- Housing and dining information
-- Campus events and announcements
-
-How can I assist you further with your OUI-related questions?`,
-        sender: "assistant",
-        timestamp: new Date()
-      };
-
-      setChats(prev => prev.map(chat => 
-        chat.id === chatToUpdate!.id 
-          ? { ...chat, messages: [...chat.messages, aiMessage], lastMessage: new Date() }
+    setChats(prevChats => 
+      prevChats.map(chat => 
+        chat.id === activeChat 
+          ? { 
+              ...chat, 
+              messages: [...chat.messages, newMessage, aiResponse],
+              lastMessage: new Date()
+            }
           : chat
-      ));
-      setIsLoading(false);
-    }, 1000);
+      )
+    );
+
+    setMessage("");
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
+  const createNewChat = () => {
+    const newChat: Chat = {
+      id: Date.now().toString(),
+      title: "New Conversation",
+      messages: [],
+      lastMessage: new Date()
+    };
+
+    setChats(prev => [newChat, ...prev]);
+    setActiveChat(newChat.id);
+  };
+
+  const handlePreQuestion = (question: string) => {
+    setMessage(question);
+    handleSendMessage();
+  };
+
+  const handleLogout = () => {
+    toast({
+      title: "Goodbye!",
+      description: "You've been signed out successfully.",
+    });
+    navigate("/");
   };
 
   return (
-    <SidebarProvider>
-      <div className="flex h-screen w-full bg-background">
-        {/* Sidebar */}
-        <Sidebar className="w-64 border-r border-sidebar-border bg-sidebar">
-          <SidebarHeader className="p-4 border-b border-sidebar-border">
-            <div className="flex items-center space-x-2 mb-4">
+    <div className="h-screen flex bg-background">
+      {/* Sidebar */}
+      <div className="w-80 border-r bg-muted/30 flex flex-col">
+        {/* Header */}
+        <div className="p-4 border-b">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-2">
               <GraduationCap className="h-6 w-6 text-accent" />
-              <span className="text-lg font-bold text-sidebar-foreground">OUI InfoMate</span>
+              <span className="font-semibold">OUI InfoMate</span>
             </div>
-            <Button 
-              onClick={createNewChat} 
-              className="w-full text-sm" 
-              variant="default"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              New Chat
-            </Button>
-          </SidebarHeader>
-          
-          <SidebarContent className="flex-1 p-4">
-            <ScrollArea className="h-full">
-              <div className="space-y-2">
-                {chats.map((chat) => (
-                  <Card 
-                    key={chat.id} 
-                    className={`cursor-pointer transition-colors hover:bg-sidebar-accent ${
-                      currentChatId === chat.id ? 'bg-sidebar-accent' : ''
-                    }`}
-                    onClick={() => setCurrentChatId(chat.id)}
-                  >
-                    <CardContent className="p-3">
-                      <div className="flex items-center space-x-2">
-                        <MessageCircle className="h-4 w-4 text-sidebar-foreground" />
-                        <span className="text-sm font-medium text-sidebar-foreground truncate">
-                          {chat.title}
-                        </span>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </ScrollArea>
-          </SidebarContent>
-
-          {/* User Info Section */}
-          <div className="p-4 border-t border-sidebar-border">
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-accent" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sidebar-foreground truncate">
-                  {user.name}
-                </p>
-                <div className="flex items-center space-x-1">
-                  <Mail className="h-3 w-3 text-sidebar-foreground/60" />
-                  <p className="text-xs text-sidebar-foreground/60 truncate">
-                    {user.email}
-                  </p>
-                </div>
-              </div>
+            <div className="flex items-center space-x-1">
+              <ThemeToggle />
+              <Button variant="ghost" size="icon" onClick={handleLogout}>
+                <LogOut className="h-4 w-4" />
+              </Button>
             </div>
           </div>
-        </Sidebar>
+          <Button 
+            onClick={createNewChat}
+            className="w-full" 
+            variant="accent"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            New Chat
+          </Button>
+        </div>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Header */}
-          <header className="flex items-center justify-between p-4 border-b border-border bg-background">
-            <div className="flex items-center space-x-4">
-              <SidebarTrigger className="lg:hidden" />
-              <h1 className="text-lg sm:text-xl font-semibold text-foreground">
-                {currentChat?.title || "OUI InfoMate"}
-              </h1>
-            </div>
-            <ThemeToggle />
-          </header>
-
-          {/* Chat Area */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            {currentChat ? (
-              <>
-                {/* Messages */}
-                <ScrollArea className="flex-1 p-4">
-                  <div className="space-y-4 max-w-4xl mx-auto">
-                    {currentChat.messages.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div
-                          className={`max-w-[80%] sm:max-w-[70%] p-3 rounded-lg ${
-                            message.sender === 'user'
-                              ? 'bg-chat-user text-chat-user-foreground'
-                              : 'bg-chat-assistant text-chat-assistant-foreground border border-border'
-                          }`}
-                        >
-                          <div 
-                            className="text-sm leading-relaxed prose prose-sm max-w-none"
-                            dangerouslySetInnerHTML={{ __html: formatMarkdown(message.text) }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                    {isLoading && (
-                      <div className="flex justify-start">
-                        <div className="bg-chat-assistant text-chat-assistant-foreground border border-border p-3 rounded-lg">
-                          <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-current rounded-full animate-pulse"></div>
-                            <div className="w-2 h-2 bg-current rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                            <div className="w-2 h-2 bg-current rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+        {/* Chat History */}
+        <ScrollArea className="flex-1 p-4">
+          <div className="space-y-4">
+            {Object.entries(groupChatsByDate(chats)).map(([dateKey, dateChats]) => (
+              <div key={dateKey}>
+                <h4 className="text-xs font-medium text-muted-foreground mb-2 px-1">
+                  {formatDateGroup(dateKey)}
+                </h4>
+                <div className="space-y-2">
+                  {dateChats.map((chat) => (
+                    <Card 
+                      key={chat.id}
+                      className={`cursor-pointer transition-colors hover:bg-accent/10 ${
+                        activeChat === chat.id ? 'bg-accent/20 border-accent' : ''
+                      }`}
+                      onClick={() => setActiveChat(chat.id)}
+                    >
+                      <CardContent className="p-3">
+                        <div className="flex items-start space-x-2">
+                          <MessageSquare className="h-4 w-4 mt-1 text-muted-foreground" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{chat.title}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {chat.messages.length} messages
+                            </p>
                           </div>
                         </div>
-                      </div>
-                    )}
-                  </div>
-                </ScrollArea>
-
-                {/* Input Area */}
-                <div className="p-4 border-t border-border bg-background">
-                  <div className="max-w-4xl mx-auto">
-                    <div className="flex space-x-2">
-                      <Input
-                        value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Ask me anything about OUI..."
-                        className="flex-1 text-sm sm:text-base"
-                        disabled={isLoading}
-                      />
-                      <Button 
-                        onClick={sendMessage} 
-                        disabled={!inputMessage.trim() || isLoading}
-                        variant="default"
-                        size="icon"
-                      >
-                        <Send className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              // Welcome Screen
-              <div className="flex-1 flex items-center justify-center p-4">
-                <div className="text-center max-w-md">
-                  <GraduationCap className="h-12 w-12 sm:h-16 sm:w-16 text-accent mx-auto mb-4" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
-                    Welcome to OUI InfoMate
-                  </h2>
-                  <p className="text-sm sm:text-base text-muted-foreground mb-6">
-                    Your AI-powered assistant for all things OUI. Ask me about courses, policies, campus life, and more!
-                  </p>
-                  <Button onClick={createNewChat} variant="default" className="text-sm sm:text-base">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Start Your First Chat
-                  </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               </div>
-            )}
+            ))}
+          </div>
+        </ScrollArea>
+
+        {/* User Info */}
+        <div className="p-4 border-t">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
+              <User className="h-5 w-5 text-accent" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">John Doe</p>
+              <p className="text-xs text-muted-foreground truncate">john.doe@student.oui.edu.ng</p>
+            </div>
           </div>
         </div>
       </div>
-    </SidebarProvider>
+
+      {/* Main Chat Area */}
+      <div className="flex-1 flex flex-col">
+        {currentChat ? (
+          <>
+            {/* Chat Header */}
+            <div className="p-4 border-b bg-background">
+              <h2 className="text-lg font-semibold">{currentChat.title}</h2>
+              <p className="text-sm text-muted-foreground">
+                AI Assistant for OUI Students
+              </p>
+            </div>
+
+            {/* Messages */}
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-6 max-w-4xl mx-auto">
+                {currentChat.messages.length === 0 ? (
+                  <div className="text-center py-12">
+                    <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+                    <h3 className="text-lg font-semibold mb-2">Welcome to OUI InfoMate</h3>
+                    <p className="text-muted-foreground mb-6">
+                      Your AI assistant for Oduduwa University Ipetumodu. Get instant information about university services, procedures, and campus life.
+                    </p>
+                    
+                    {/* Pre-defined Questions */}
+                    <div className="max-w-2xl mx-auto space-y-3">
+                      <p className="text-sm font-medium text-muted-foreground mb-4">Try asking:</p>
+                      <div className="grid gap-3">
+                        {selectedQuestions.map((question, index) => (
+                          <Button
+                            key={index}
+                            variant="outline"
+                            className="text-left h-auto p-4 justify-start whitespace-normal"
+                            onClick={() => handlePreQuestion(question)}
+                          >
+                            <Lightbulb className="h-4 w-4 mr-2 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm">{question}</span>
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  currentChat.messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div
+                        className={`max-w-[80%] rounded-lg p-4 ${
+                          msg.sender === 'user'
+                            ? 'bg-chat-user text-chat-user-foreground'
+                            : 'bg-chat-assistant text-chat-assistant-foreground border'
+                        }`}
+                      >
+                        <div 
+                          className="whitespace-pre-wrap" 
+                          dangerouslySetInnerHTML={{ __html: formatMarkdown(msg.content) }}
+                        />
+                        <div className="text-xs opacity-70 mt-2">
+                          {msg.timestamp.toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </ScrollArea>
+
+            {/* Input Area */}
+            <div className="p-4 border-t bg-background">
+              <div className="max-w-4xl mx-auto">
+                <div className="flex space-x-2">
+                  <Input
+                    placeholder="Ask me anything about OUI..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                    className="flex-1"
+                  />
+                  <Button 
+                    onClick={handleSendMessage}
+                    variant="chat"
+                    size="icon"
+                    disabled={!message.trim()}
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-center">
+              <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+              <p className="text-lg text-muted-foreground">Select a chat to start</p>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

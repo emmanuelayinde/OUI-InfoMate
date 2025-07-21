@@ -1,122 +1,138 @@
-
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { GraduationCap, MessageCircle, Search, Users, ArrowRight } from "lucide-react";
+import { 
+  MessageSquare, 
+  BookOpenCheck, 
+  Users, 
+  GraduationCap, 
+  ChevronRight,
+  Sparkles,
+  Clock,
+  Target
+} from "lucide-react";
+import heroImage from "@/assets/hero-image.jpg";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const Landing = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <GraduationCap className="h-6 w-6 sm:h-8 sm:w-8 text-accent" />
-              <span className="text-lg sm:text-xl font-bold text-foreground">OUI InfoMate</span>
-            </div>
-            
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              <ThemeToggle />
-              <Link to="/login">
-                <Button variant="outline" size="sm" className="text-sm">
-                  Sign In
-                </Button>
-              </Link>
-              <Link to="/signup">
-                <Button size="sm" className="text-sm">
-                  Get Started
-                </Button>
-              </Link>
-            </div>
+      {/* Navigation */}
+      <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <GraduationCap className="h-8 w-8 text-accent" />
+            <span className="text-xl font-bold text-foreground">OUI InfoMate</span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <ThemeToggle />
+            <Link to="/login">
+              <Button variant="ghost">Sign In</Button>
+            </Link>
+            <Link to="/signup">
+              <Button variant="accent">Get Started</Button>
+            </Link>
           </div>
         </div>
-      </header>
+      </nav>
 
       {/* Hero Section */}
-      <section className="py-12 sm:py-20 lg:py-28">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold tracking-tight text-foreground mb-4 sm:mb-6">
-              Your AI-Powered
-              <span className="block bg-gradient-primary bg-clip-text text-transparent">
-                School Information Assistant
-              </span>
-            </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed">
-              Get instant answers about OUI policies, procedures, academics, and campus life. 
-              InfoMate is here to help you navigate your university experience with ease.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
-              <Link to="/signup">
-                <Button size="lg" className="w-full sm:w-auto text-sm sm:text-base">
-                  Start Chatting
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto text-sm sm:text-base">
-                  Sign In
-                </Button>
-              </Link>
+      <section className="relative overflow-hidden">
+        <div className="container mx-auto px-4 py-20 lg:py-32">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-8">
+              <div className="inline-flex items-center rounded-full bg-accent/10 px-4 py-2 text-sm font-medium text-accent">
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI-Powered School Information Assistant
+              </div>
+              
+              <h1 className="text-4xl lg:text-6xl font-bold tracking-tight text-foreground">
+                Your OUI
+                <span className="text-accent block">Info Companion</span>
+              </h1>
+              
+              <p className="text-xl text-muted-foreground leading-relaxed max-w-md">
+                Get instant answers about school policies, procedures, facilities, and services. 
+                OUI InfoMate AI is designed specifically for Oduduwa University Ipetumodu students 
+                to help you navigate university life with ease.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/signup">
+                  <Button variant="hero" size="lg" className="group">
+                    Get School Info Now
+                    <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </Link>
+                <Link to="/login">
+                  <Button variant="outline" size="lg">
+                    Sign In
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-accent rounded-3xl opacity-20 blur-3xl"></div>
+              <img 
+                src={heroImage} 
+                alt="Students getting school information assistance" 
+                className="relative rounded-3xl shadow-large w-full"
+              />
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-12 sm:py-20 bg-muted/50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center mb-8 sm:mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-              Everything You Need to Know About OUI
+      <section className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+              Everything About OUI at Your Fingertips
             </h2>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Access comprehensive information about your university experience
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Get instant information about university policies, facilities, services, and procedures at Oduduwa University Ipetumodu.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            <Card className="border-0 shadow-soft">
-              <CardHeader className="text-center pb-3 sm:pb-4">
-                <div className="mx-auto w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
-                  <MessageCircle className="h-6 w-6 text-accent" />
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="border-0 shadow-medium hover:shadow-large transition-shadow">
+              <CardContent className="p-8 text-center space-y-4">
+                <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
+                  <BookOpenCheck className="w-8 h-8 text-accent" />
                 </div>
-                <CardTitle className="text-lg sm:text-xl">Instant Answers</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-sm sm:text-base">
-                  Get immediate responses to your questions about courses, policies, and campus resources
-                </CardDescription>
+                <h3 className="text-xl font-semibold text-foreground">University Policies</h3>
+                <p className="text-muted-foreground">
+                  Get quick answers about admission requirements, academic policies, 
+                  student conduct guidelines, and university regulations.
+                </p>
               </CardContent>
             </Card>
-
-            <Card className="border-0 shadow-soft">
-              <CardHeader className="text-center pb-3 sm:pb-4">
-                <div className="mx-auto w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
-                  <Search className="h-6 w-6 text-accent" />
+            
+            <Card className="border-0 shadow-medium hover:shadow-large transition-shadow">
+              <CardContent className="p-8 text-center space-y-4">
+                <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
+                  <Target className="w-8 h-8 text-accent" />
                 </div>
-                <CardTitle className="text-lg sm:text-xl">Comprehensive Search</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-sm sm:text-base">
-                  Search through academic programs, student services, and university procedures
-                </CardDescription>
+                <h3 className="text-xl font-semibold text-foreground">Facilities & Services</h3>
+                <p className="text-muted-foreground">
+                  Learn about library services, hostel information, medical facilities, 
+                  sports centers, and other campus amenities.
+                </p>
               </CardContent>
             </Card>
-
-            <Card className="border-0 shadow-soft md:col-span-2 lg:col-span-1">
-              <CardHeader className="text-center pb-3 sm:pb-4">
-                <div className="mx-auto w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-3 sm:mb-4">
-                  <Users className="h-6 w-6 text-accent" />
+            
+            <Card className="border-0 shadow-medium hover:shadow-large transition-shadow">
+              <CardContent className="p-8 text-center space-y-4">
+                <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto">
+                  <Clock className="w-8 h-8 text-accent" />
                 </div>
-                <CardTitle className="text-lg sm:text-xl">Student Support</CardTitle>
-              </CardHeader>
-              <CardContent className="text-center">
-                <CardDescription className="text-sm sm:text-base">
-                  Access guidance on admissions, financial aid, academic support, and campus life
-                </CardDescription>
+                <h3 className="text-xl font-semibold text-foreground">24/7 Information Access</h3>
+                <p className="text-muted-foreground">
+                  Get answers about registration processes, fee payments, 
+                  academic calendar, and administrative procedures anytime.
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -124,19 +140,20 @@ const Landing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-12 sm:py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3 sm:mb-4">
-              Ready to Get Started?
+      <section className="py-20">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+              Ready to Navigate OUI with Confidence?
             </h2>
-            <p className="text-sm sm:text-base text-muted-foreground mb-6 sm:mb-8">
-              Join thousands of students who use InfoMate to navigate their university experience
+            <p className="text-xl text-muted-foreground">
+              Join your fellow OUI students who are already using InfoMate AI 
+              to get quick answers about university information and services.
             </p>
             <Link to="/signup">
-              <Button size="lg" className="text-sm sm:text-base">
-                Create Your Account
-                <ArrowRight className="ml-2 h-4 w-4" />
+              <Button variant="hero" size="lg" className="group">
+                Get Started for Free
+                <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </div>
@@ -144,15 +161,15 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t bg-muted/50 py-8 sm:py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="border-t bg-muted/30 py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2">
-              <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-accent" />
-              <span className="text-sm sm:text-base font-semibold text-foreground">OUI InfoMate</span>
+              <GraduationCap className="h-6 w-6 text-accent" />
+              <span className="font-semibold text-foreground">OUI InfoMate</span>
             </div>
-            <p className="text-xs sm:text-sm text-muted-foreground text-center sm:text-right">
-              © 2024 OUI InfoMate. Your AI-powered university assistant.
+            <p className="text-sm text-muted-foreground">
+              © 2024 OUI InfoMate AI. Your guide to OUI information and services.
             </p>
           </div>
         </div>
