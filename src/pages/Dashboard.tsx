@@ -12,7 +12,9 @@ import {
   Plus, 
   LogOut,
   User,
-  Lightbulb
+  Lightbulb,
+  Menu,
+  X
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -116,6 +118,7 @@ const Dashboard = () => {
   const [activeChat, setActiveChat] = useState<string>("1");
   const [message, setMessage] = useState("");
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -170,6 +173,7 @@ const Dashboard = () => {
 
     setChats(prev => [newChat, ...prev]);
     setActiveChat(newChat.id);
+    setIsSidebarOpen(false);
   };
 
   const handlePreQuestion = (question: string) => {
@@ -185,109 +189,159 @@ const Dashboard = () => {
     navigate("/");
   };
 
-  return (
-    <div className="h-screen flex bg-background">
-      {/* Sidebar */}
-      <div className="w-80 border-r bg-muted/30 flex flex-col">
-        {/* Header */}
-        <div className="p-4 border-b">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-2">
-              <GraduationCap className="h-6 w-6 text-accent" />
-              <span className="font-semibold">OUI InfoMate</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <ThemeToggle />
-              <Button variant="ghost" size="icon" onClick={handleLogout}>
-                <LogOut className="h-4 w-4" />
-              </Button>
-            </div>
+  const handleChatSelect = (chatId: string) => {
+    setActiveChat(chatId);
+    setIsSidebarOpen(false);
+  };
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const sidebarContent = (
+    <>
+      {/* Header */}
+      <div className="p-4 border-b">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-2">
+            <GraduationCap className="h-6 w-6 text-accent" />
+            <span className="font-semibold text-sm">OUI InfoMate</span>
           </div>
-          <Button 
-            onClick={createNewChat}
-            className="w-full" 
-            variant="accent"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            New Chat
-          </Button>
+          <div className="flex items-center space-x-1">
+            <ThemeToggle />
+            <Button variant="ghost" size="icon" onClick={handleLogout}>
+              <LogOut className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={toggleSidebar}
+              className="md:hidden"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
+        <Button 
+          onClick={createNewChat}
+          className="w-full" 
+          variant="default"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          New Chat
+        </Button>
+      </div>
 
-        {/* Chat History */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
-            {Object.entries(groupChatsByDate(chats)).map(([dateKey, dateChats]) => (
-              <div key={dateKey}>
-                <h4 className="text-xs font-medium text-muted-foreground mb-2 px-1">
-                  {formatDateGroup(dateKey)}
-                </h4>
-                <div className="space-y-2">
-                  {dateChats.map((chat) => (
-                    <Card 
-                      key={chat.id}
-                      className={`cursor-pointer transition-colors hover:bg-accent/10 ${
-                        activeChat === chat.id ? 'bg-accent/20 border-accent' : ''
-                      }`}
-                      onClick={() => setActiveChat(chat.id)}
-                    >
-                      <CardContent className="p-3">
-                        <div className="flex items-start space-x-2">
-                          <MessageSquare className="h-4 w-4 mt-1 text-muted-foreground" />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">{chat.title}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {chat.messages.length} messages
-                            </p>
-                          </div>
+      {/* Chat History */}
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {Object.entries(groupChatsByDate(chats)).map(([dateKey, dateChats]) => (
+            <div key={dateKey}>
+              <h4 className="text-xs font-medium text-muted-foreground mb-2 px-1">
+                {formatDateGroup(dateKey)}
+              </h4>
+              <div className="space-y-2">
+                {dateChats.map((chat) => (
+                  <Card 
+                    key={chat.id}
+                    className={`cursor-pointer transition-colors hover:bg-accent/10 ${
+                      activeChat === chat.id ? 'bg-accent/20 border-accent' : ''
+                    }`}
+                    onClick={() => handleChatSelect(chat.id)}
+                  >
+                    <CardContent className="p-3">
+                      <div className="flex items-start space-x-2">
+                        <MessageSquare className="h-4 w-4 mt-1 text-muted-foreground" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium truncate">{chat.title}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {chat.messages.length} messages
+                          </p>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            ))}
-          </div>
-        </ScrollArea>
+            </div>
+          ))}
+        </div>
+      </ScrollArea>
 
-        {/* User Info */}
-        <div className="p-4 border-t">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
-              <User className="h-5 w-5 text-accent" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">John Doe</p>
-              <p className="text-xs text-muted-foreground truncate">john.doe@student.oui.edu.ng</p>
-            </div>
+      {/* User Info */}
+      <div className="p-4 border-t">
+        <div className="flex items-center space-x-3">
+          <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
+            <User className="h-5 w-5 text-accent" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium truncate">John Doe</p>
+            <p className="text-xs text-muted-foreground truncate">john.doe@student.oui.edu.ng</p>
           </div>
         </div>
       </div>
+    </>
+  );
+
+  return (
+    <div className="h-screen flex bg-background">
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex w-80 border-r bg-muted/30 flex-col">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-black/50" onClick={toggleSidebar} />
+          <div className="absolute left-0 top-0 h-full w-80 bg-background border-r shadow-lg">
+            <div className="h-full flex flex-col">
+              {sidebarContent}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col min-w-0">
         {currentChat ? (
           <>
             {/* Chat Header */}
             <div className="p-4 border-b bg-background">
-              <h2 className="text-lg font-semibold">{currentChat.title}</h2>
-              <p className="text-sm text-muted-foreground">
-                AI Assistant for OUI Students
-              </p>
+              <div className="flex items-center space-x-3">
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={toggleSidebar}
+                  className="md:hidden"
+                >
+                  <Menu className="h-4 w-4" />
+                </Button>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg font-semibold truncate">{currentChat.title}</h2>
+                  <p className="text-sm text-muted-foreground">
+                    AI Assistant for OUI Students
+                  </p>
+                </div>
+                <div className="hidden md:flex">
+                  <ThemeToggle />
+                </div>
+              </div>
             </div>
 
             {/* Messages */}
             <ScrollArea className="flex-1 p-4">
               <div className="space-y-6 max-w-4xl mx-auto">
                 {currentChat.messages.length === 0 ? (
-                  <div className="text-center py-12">
+                  <div className="text-center py-8 md:py-12">
                     <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                     <h3 className="text-lg font-semibold mb-2">Welcome to OUI InfoMate</h3>
-                    <p className="text-muted-foreground mb-6">
+                    <p className="text-muted-foreground mb-6 px-4">
                       Your AI assistant for Oduduwa University Ipetumodu. Get instant information about university services, procedures, and campus life.
                     </p>
                     
                     {/* Pre-defined Questions */}
-                    <div className="max-w-2xl mx-auto space-y-3">
+                    <div className="max-w-2xl mx-auto space-y-3 px-4">
                       <p className="text-sm font-medium text-muted-foreground mb-4">Try asking:</p>
                       <div className="grid gap-3">
                         {selectedQuestions.map((question, index) => (
@@ -311,14 +365,14 @@ const Dashboard = () => {
                       className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
                       <div
-                        className={`max-w-[80%] rounded-lg p-4 ${
+                        className={`max-w-[85%] md:max-w-[80%] rounded-lg p-3 md:p-4 ${
                           msg.sender === 'user'
                             ? 'bg-chat-user text-chat-user-foreground'
                             : 'bg-chat-assistant text-chat-assistant-foreground border'
                         }`}
                       >
                         <div 
-                          className="whitespace-pre-wrap" 
+                          className="whitespace-pre-wrap text-sm md:text-base" 
                           dangerouslySetInnerHTML={{ __html: formatMarkdown(msg.content) }}
                         />
                         <div className="text-xs opacity-70 mt-2">
@@ -351,7 +405,7 @@ const Dashboard = () => {
                   />
                   <Button 
                     onClick={handleSendMessage}
-                    variant="chat"
+                    variant="default"
                     size="icon"
                     disabled={!message.trim()}
                   >
