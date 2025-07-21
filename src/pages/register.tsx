@@ -1,9 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
-import { Eye, EyeOff, GraduationCap } from "lucide-react";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-
-import { loginApi } from "@/api";
+import { registerApi } from "@/api";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,43 +12,53 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store";
-import { ILoginCredentials } from "@/types";
+import { IRegisterCredentials } from "@/types";
+import { useMutation } from "@tanstack/react-query";
+import { Eye, EyeOff, GraduationCap } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const [formData, setFormData] = useState<ILoginCredentials>({
-    username: "",
+const Signup = () => {
+  const [formData, setFormData] = useState<IRegisterCredentials>({
+    first_name: "",
+    last_name: "",
+    email: "",
     password: "",
+    username: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { login } = useAuthStore();
+  const { login, setUserProfile } = useAuthStore();
 
   // ================= API CALL =================
   const { mutateAsync, isPending } = useMutation({
-    mutationKey: ["login"],
-    mutationFn: async () => await loginApi(formData),
+    mutationKey: ["register"],
+    mutationFn: async () => await registerApi(formData),
     onSuccess: (data) => {
-      // Handle successful login
       toast({
-        title: "Login successful",
-        description: "Welcome back!",
+        title: "Registration successful",
+        description: "You can now log in with your new account.",
       });
-      login(data);
+      login(data.token);
+      setUserProfile({ ...data, token: undefined });
       navigate("/chat");
+      return;
     },
     onError: (error) => {
-      console.log("Login failed:", error);
-
+      console.log("Registration failed:", error);
       const errorMessage =
-        error.response?.data?.detail || "Login failed. Please try again.";
-      // Handle login error
+        error.response?.data?.detail ||
+        "Registration failed. Please try again.";
       toast({
-        title: "Login failed",
+        title: "Registration failed",
         description: errorMessage,
         variant: "destructive",
       });
+      return;
     },
   });
 
@@ -63,7 +68,14 @@ const Login = () => {
     if (isPending) {
       return;
     }
-    if (!formData.username || !formData.password) {
+    // Validate form data
+    if (
+      !formData.first_name ||
+      !formData.last_name ||
+      !formData.email ||
+      !formData.password ||
+      !formData.username
+    ) {
       toast({
         title: "Error",
         description: "Please fill in all fields.",
@@ -93,25 +105,67 @@ const Login = () => {
           </Link>
         </div>
 
-        {/* Login Form */}
+        {/* Signup Form */}
         <Card className="shadow-large border-0">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Welcome back</CardTitle>
+            <CardTitle className="text-2xl">Create your account</CardTitle>
             <CardDescription>
-              Sign in to get OUI information and assistance
+              Join OUI students getting instant school information
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
+                <Label htmlFor="first_name">First Name</Label>
+                <Input
+                  id="first_name"
+                  type="text"
+                  placeholder="Enter your first name"
+                  value={formData.first_name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, first_name: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="last_name">Last Name</Label>
+                <Input
+                  id="last_name"
+                  type="text"
+                  placeholder="Enter your last name"
+                  value={formData.last_name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, last_name: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
                 <Input
                   id="username"
                   type="text"
-                  placeholder="Enter your username"
+                  placeholder="Choose a username"
                   value={formData.username}
                   onChange={(e) =>
                     setFormData({ ...formData, username: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
                   }
                   required
                 />
@@ -123,14 +177,13 @@ const Login = () => {
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder="Create a password"
                     value={formData.password}
                     onChange={(e) =>
                       setFormData({ ...formData, password: e.target.value })
                     }
                     required
                   />
-
                   <Button
                     type="button"
                     variant="ghost"
@@ -153,19 +206,19 @@ const Login = () => {
                 variant="hero"
                 disabled={isPending}
               >
-                {isPending ? "Signing in..." : "Sign in"}
+                {isPending ? "Creating account..." : "Create account"}
               </Button>
             </form>
 
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">
-                Don't have an account?{" "}
+                Already have an account?{" "}
               </span>
               <Link
-                to="/register"
+                to="/login"
                 className="text-accent hover:text-accent-hover font-medium"
               >
-                Sign up
+                Sign in
               </Link>
             </div>
           </CardContent>
@@ -181,4 +234,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;

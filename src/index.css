@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -40,12 +39,22 @@ All colors MUST be HSL.
     --ring: 158 64% 52%;
 
     /* Custom design tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(158 64% 45%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(158 64% 45%) 100%);
-    --shadow-soft: 0 4px 6px -1px hsl(158 64% 52% / 0.08), 0 2px 4px -1px hsl(158 64% 52% / 0.06);
-    --shadow-medium: 0 10px 15px -3px hsl(158 64% 52% / 0.1), 0 4px 6px -2px hsl(158 64% 52% / 0.05);
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(158 64% 52%) 0%,
+      hsl(158 64% 45%) 100%
+    );
+    --gradient-accent: linear-gradient(
+      135deg,
+      hsl(158 64% 52%) 0%,
+      hsl(158 64% 45%) 100%
+    );
+    --shadow-soft: 0 4px 6px -1px hsl(158 64% 52% / 0.08),
+      0 2px 4px -1px hsl(158 64% 52% / 0.06);
+    --shadow-medium: 0 10px 15px -3px hsl(158 64% 52% / 0.1),
+      0 4px 6px -2px hsl(158 64% 52% / 0.05);
     --shadow-large: 0 25px 50px -12px hsl(158 64% 52% / 0.25);
-    
+
     --chat-bg: 248 250% 99%;
     --chat-user: 158 64% 52%;
     --chat-user-foreground: 0 0% 100%;
@@ -96,9 +105,17 @@ All colors MUST be HSL.
     --ring: 158 64% 52%;
 
     /* Dark mode custom tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(158 64% 45%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(158 64% 52%) 0%, hsl(158 64% 45%) 100%);
-    
+    --gradient-primary: linear-gradient(
+      135deg,
+      hsl(158 64% 52%) 0%,
+      hsl(158 64% 45%) 100%
+    );
+    --gradient-accent: linear-gradient(
+      135deg,
+      hsl(158 64% 52%) 0%,
+      hsl(158 64% 45%) 100%
+    );
+
     --chat-bg: 217.2 32.6% 15%;
     --chat-user: 158 64% 52%;
     --chat-user-foreground: 0 0% 100%;
@@ -123,5 +140,37 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* LOADER */
+.loader {
+  width: 24px;
+  aspect-ratio: 1;
+  display: grid;
+  -webkit-mask: conic-gradient(from 15deg, #0000, #000);
+  animation: l26 1s infinite steps(12);
+}
+.loader,
+.loader:before,
+.loader:after {
+  background: radial-gradient(closest-side at 50% 12.5%, #fff 96%, #0000) 50% 0/20%
+      80% repeat-y,
+    radial-gradient(closest-side at 12.5% 50%, #fff 96%, #0000) 0 50%/80% 20%
+      repeat-x;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  grid-area: 1/1;
+  transform: rotate(30deg);
+}
+.loader:after {
+  transform: rotate(60deg);
+}
+
+@keyframes l26 {
+  100% {
+    transform: rotate(1turn);
   }
 }

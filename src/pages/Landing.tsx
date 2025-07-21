@@ -1,21 +1,22 @@
-
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "react-router-dom";
-import { 
-  MessageSquare, 
-  BookOpenCheck, 
-  Users, 
-  GraduationCap, 
+import {
+  BookOpenCheck,
   ChevronRight,
-  Sparkles,
   Clock,
-  Target
+  GraduationCap,
+  Sparkles,
+  Target,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+
 import heroImage from "@/assets/hero-image.jpg";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { useAuthStore } from "@/store";
 
 const Landing = () => {
+  const { isAuthenticated } = useAuthStore();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -23,13 +24,25 @@ const Landing = () => {
         <div className="container mx-auto px-4 h-14 md:h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <GraduationCap className="h-6 w-6 md:h-8 md:w-8 text-accent" />
-            <span className="text-lg md:text-xl font-bold text-foreground">OUI InfoMate</span>
+            <span className="text-lg md:text-xl font-bold text-foreground">
+              OUI InfoMate
+            </span>
           </div>
           <div className="flex items-center space-x-2 md:space-x-4">
             <ThemeToggle />
-            <Link to="/login">
-              <Button variant="ghost" size="sm" className="text-sm">Sign In</Button>
-            </Link>
+            {isAuthenticated ? (
+              <Link to="/chat">
+                <Button variant="ghost" size="sm" className="text-sm">
+                  Chat
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost" size="sm" className="text-sm">
+                  Login
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </nav>
@@ -43,18 +56,19 @@ const Landing = () => {
                 <Sparkles className="w-3 h-3 md:w-4 md:h-4 mr-2" />
                 AI-Powered School Information Assistant
               </div>
-              
+
               <h1 className="text-3xl md:text-4xl lg:text-6xl font-bold tracking-tight text-foreground">
                 Your OUI
                 <span className="text-accent block">Info Companion</span>
               </h1>
-              
+
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Get instant answers about school policies, procedures, facilities, and services. 
-                OUI InfoMate AI is designed specifically for Oduduwa University Ipetumodu students 
-                to help you navigate university life with ease.
+                Get instant answers about school policies, procedures,
+                facilities, and services. OUI InfoMate AI is designed
+                specifically for Oduduwa University Ipetumodu students to help
+                you navigate university life with ease.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/login">
                   <Button size="lg" className="w-full sm:w-auto group">
@@ -64,12 +78,12 @@ const Landing = () => {
                 </Link>
               </div>
             </div>
-            
+
             <div className="relative mt-8 lg:mt-0">
               <div className="absolute inset-0 bg-gradient-accent rounded-2xl md:rounded-3xl opacity-20 blur-2xl md:blur-3xl"></div>
-              <img 
-                src={heroImage} 
-                alt="Students getting school information assistance" 
+              <img
+                src={heroImage}
+                alt="Students getting school information assistance"
                 className="relative rounded-2xl md:rounded-3xl shadow-large w-full"
               />
             </div>
@@ -85,45 +99,53 @@ const Landing = () => {
               Everything About OUI at Your Fingertips
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Get instant information about university policies, facilities, services, and procedures at Oduduwa University Ipetumodu.
+              Get instant information about university policies, facilities,
+              services, and procedures at Oduduwa University Ipetumodu.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             <Card className="border-0 shadow-medium hover:shadow-large transition-shadow">
               <CardContent className="p-6 md:p-8 text-center space-y-4">
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-accent/10 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto">
                   <BookOpenCheck className="w-6 h-6 md:w-8 md:h-8 text-accent" />
                 </div>
-                <h3 className="text-lg md:text-xl font-semibold text-foreground">University Policies</h3>
+                <h3 className="text-lg md:text-xl font-semibold text-foreground">
+                  University Policies
+                </h3>
                 <p className="text-sm md:text-base text-muted-foreground">
-                  Get quick answers about admission requirements, academic policies, 
-                  student conduct guidelines, and university regulations.
+                  Get quick answers about admission requirements, academic
+                  policies, student conduct guidelines, and university
+                  regulations.
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card className="border-0 shadow-medium hover:shadow-large transition-shadow">
               <CardContent className="p-6 md:p-8 text-center space-y-4">
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-accent/10 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto">
                   <Target className="w-6 h-6 md:w-8 md:h-8 text-accent" />
                 </div>
-                <h3 className="text-lg md:text-xl font-semibold text-foreground">Facilities & Services</h3>
+                <h3 className="text-lg md:text-xl font-semibold text-foreground">
+                  Facilities & Services
+                </h3>
                 <p className="text-sm md:text-base text-muted-foreground">
-                  Learn about library services, hostel information, medical facilities, 
-                  sports centers, and other campus amenities.
+                  Learn about library services, hostel information, medical
+                  facilities, sports centers, and other campus amenities.
                 </p>
               </CardContent>
             </Card>
-            
+
             <Card className="border-0 shadow-medium hover:shadow-large transition-shadow md:col-span-2 lg:col-span-1">
               <CardContent className="p-6 md:p-8 text-center space-y-4">
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-accent/10 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto">
                   <Clock className="w-6 h-6 md:w-8 md:h-8 text-accent" />
                 </div>
-                <h3 className="text-lg md:text-xl font-semibold text-foreground">24/7 Information Access</h3>
+                <h3 className="text-lg md:text-xl font-semibold text-foreground">
+                  24/7 Information Access
+                </h3>
                 <p className="text-sm md:text-base text-muted-foreground">
-                  Get answers about registration processes, fee payments, 
+                  Get answers about registration processes, fee payments,
                   academic calendar, and administrative procedures anytime.
                 </p>
               </CardContent>
@@ -140,8 +162,8 @@ const Landing = () => {
               Ready to Navigate OUI with Confidence?
             </h2>
             <p className="text-lg md:text-xl text-muted-foreground">
-              Join your fellow OUI students who are already using InfoMate AI 
-              to get quick answers about university information and services.
+              Join your fellow OUI students who are already using InfoMate AI to
+              get quick answers about university information and services.
             </p>
             <Link to="/login">
               <Button size="lg" className="group">
@@ -159,10 +181,13 @@ const Landing = () => {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-2">
               <GraduationCap className="h-5 w-5 md:h-6 md:w-6 text-accent" />
-              <span className="text-sm md:text-base font-semibold text-foreground">OUI InfoMate</span>
+              <span className="text-sm md:text-base font-semibold text-foreground">
+                OUI InfoMate
+              </span>
             </div>
             <p className="text-xs md:text-sm text-muted-foreground text-center md:text-right">
-              © 2024 OUI InfoMate AI. Your guide to OUI information and services.
+              © 2024 OUI InfoMate AI. Your guide to OUI information and
+              services.
             </p>
           </div>
         </div>
