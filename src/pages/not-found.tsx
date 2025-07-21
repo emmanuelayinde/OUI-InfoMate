@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 
-const NotFound = () => {
+const NotFoundPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
       <div className="text-center space-y-6 max-w-md mx-auto px-4">
@@ -38,4 +38,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound;
+export default NotFoundPage;

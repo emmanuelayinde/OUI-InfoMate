@@ -19,7 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store";
 import { ILoginCredentials } from "@/types";
 
-const LoginUser = () => {
+const LoginPage = () => {
   const [formData, setFormData] = useState<ILoginCredentials>({
     username: "",
     password: "",
@@ -183,4 +183,4 @@ const LoginUser = () => {
   );
 };
 
-export default LoginUser;
+export default LoginPage;

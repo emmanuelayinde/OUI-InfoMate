@@ -7,7 +7,6 @@ import {
   Send,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { getAIResponseApi } from "@/api";
 import { ChatSidebar, Loader } from "@/components";
@@ -38,23 +37,18 @@ const preQuestions = [
 
 // Helper function to format date for grouping
 
-const Chat = () => {
+const ChatPage = () => {
   const [message, setMessage] = useState("");
   const [shouldRefetchHistory, setShouldRefetchHistory] = useState(false);
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const navigate = useNavigate();
   const { toast } = useToast();
   const {
     activeChatId,
     getActiveChat,
-    setActiveChat,
     isSidebarOpen,
-    openChatSidebar,
-    closeChatSidebar,
     toggleChatSidebar,
-    addMessageToActiveChat,
     updateChat,
   } = useChatStore();
 
@@ -423,4 +417,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default ChatPage;
