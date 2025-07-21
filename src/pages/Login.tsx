@@ -19,7 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuthStore } from "@/store";
 import { ILoginCredentials } from "@/types";
 
-const Login = () => {
+const LoginUser = () => {
   const [formData, setFormData] = useState<ILoginCredentials>({
     username: "",
     password: "",
@@ -48,7 +48,8 @@ const Login = () => {
 
       // Try to extract error message from AxiosError, fallback to default
       const errorMessage =
-        (error as any)?.response?.data?.detail || "Login failed. Please try again.";
+        (error as any)?.response?.data?.detail ||
+        "Login failed. Please try again.";
       // Handle login error
       toast({
         title: "Login failed",
@@ -182,4 +183,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginUser;

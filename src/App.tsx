@@ -5,7 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ChatLayout } from "./components";
-import { Chat, LandingPage, Login, NotFound, Register } from "./pages";
+import { Chat, LandingPage, LoginUser, NotFound, Register } from "./pages";
 
 const queryClient = new QueryClient();
 
@@ -17,7 +17,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginUser />} />
           <Route path="/register" element={<Register />} />
           <Route
             path="/chat"
