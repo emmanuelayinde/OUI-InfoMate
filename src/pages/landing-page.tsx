@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuthStore } from "@/store";
 
-const Landing = () => {
+const LandingPage = () => {
   const { isAuthenticated } = useAuthStore();
 
   return (
@@ -186,7 +186,7 @@ const Landing = () => {
               </span>
             </div>
             <p className="text-xs md:text-sm text-muted-foreground text-center md:text-right">
-              © 2024 OUI InfoMate AI. Your guide to OUI information and
+              © 2025 OUI InfoMate AI. Your guide to OUI information and
               services.
             </p>
           </div>
@@ -196,4 +196,4 @@ const Landing = () => {
   );
 };
 
-export default Landing;
+export default LandingPage;
