@@ -106,8 +106,12 @@ const Chat = () => {
     },
     onError: (error) => {
       console.error("Error sending message:", error);
+      // Safely extract error message if error is an AxiosError, otherwise use default
       const errorMessage =
-        error.response?.data?.detail ||
+        (typeof error === "object" &&
+          error !== null &&
+          "response" in error &&
+          (error as any).response?.data?.detail) ||
         "Failed to send message. Please try again.";
       toast({
         title: "Error",

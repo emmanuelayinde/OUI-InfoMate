@@ -46,8 +46,9 @@ const Login = () => {
     onError: (error) => {
       console.log("Login failed:", error);
 
+      // Try to extract error message from AxiosError, fallback to default
       const errorMessage =
-        error.response?.data?.detail || "Login failed. Please try again.";
+        (error as any)?.response?.data?.detail || "Login failed. Please try again.";
       // Handle login error
       toast({
         title: "Login failed",

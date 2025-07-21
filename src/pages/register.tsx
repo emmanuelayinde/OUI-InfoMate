@@ -50,9 +50,15 @@ const Register = () => {
     },
     onError: (error) => {
       console.log("Registration failed:", error);
-      const errorMessage =
-        error.response?.data?.detail ||
-        "Registration failed. Please try again.";
+      let errorMessage = "Registration failed. Please try again.";
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "response" in error &&
+        (error as any).response?.data?.detail
+      ) {
+        errorMessage = (error as any).response.data.detail;
+      }
       toast({
         title: "Registration failed",
         description: errorMessage,
