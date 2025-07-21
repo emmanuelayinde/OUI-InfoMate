@@ -5,14 +5,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
-import { GraduationCap, Eye, EyeOff } from "lucide-react";
+import { GraduationCap, Eye, EyeOff, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-const Login = () => {
-  const [email, setEmail] = useState("");
+const ResetPassword = () => {
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -21,14 +22,22 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate login - in real app, this would connect to Supabase
+    // Simulate password reset
     setTimeout(() => {
-      if (email && password) {
-        toast({
-          title: "Welcome back!",
-          description: "You've been successfully signed in.",
-        });
-        navigate("/dashboard");
+      if (password && confirmPassword) {
+        if (password === confirmPassword) {
+          toast({
+            title: "Password updated!",
+            description: "Your password has been successfully updated.",
+          });
+          navigate("/login");
+        } else {
+          toast({
+            title: "Error",
+            description: "Passwords do not match.",
+            variant: "destructive",
+          });
+        }
       } else {
         toast({
           title: "Error",
@@ -55,36 +64,23 @@ const Login = () => {
           </Link>
         </div>
 
-        {/* Login Form */}
+        {/* Reset Password Form */}
         <Card className="shadow-large border-0 mx-auto">
           <CardHeader className="text-center px-4 sm:px-6">
-            <CardTitle className="text-xl sm:text-2xl">Welcome back</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl">Set New Password</CardTitle>
             <CardDescription className="text-sm sm:text-base">
-              Sign in to get OUI information and assistance
+              Enter your new password below
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 sm:px-6">
             <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="text-sm sm:text-base"
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm">Password</Label>
+                <Label htmlFor="password" className="text-sm">New Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
+                    placeholder="Enter new password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -106,13 +102,32 @@ const Login = () => {
                 </div>
               </div>
 
-              <div className="text-right">
-                <Link 
-                  to="/forgot-password" 
-                  className="text-sm text-accent hover:text-accent-hover font-medium"
-                >
-                  Forgot your password?
-                </Link>
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword" className="text-sm">Confirm Password</Label>
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm new password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
+                    className="text-sm sm:text-base pr-10"
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </div>
 
               <Button 
@@ -121,22 +136,16 @@ const Login = () => {
                 variant="default"
                 disabled={loading}
               >
-                {loading ? "Signing in..." : "Sign in"}
+                {loading ? "Updating..." : "Update Password"}
               </Button>
             </form>
-
-            <div className="mt-4 sm:mt-6 text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
-              <Link to="/signup" className="text-accent hover:text-accent-hover font-medium">
-                Sign up
-              </Link>
-            </div>
           </CardContent>
         </Card>
 
         <div className="text-center text-sm text-muted-foreground">
-          <Link to="/" className="hover:text-foreground">
-            ← Back to home
+          <Link to="/login" className="hover:text-foreground inline-flex items-center gap-1">
+            <ArrowLeft className="h-4 w-4" />
+            Back to login
           </Link>
         </div>
       </div>
@@ -144,4 +153,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ResetPassword;

@@ -5,14 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
-import { GraduationCap, Eye, EyeOff } from "lucide-react";
+import { GraduationCap, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
 
-const Login = () => {
+const ForgotPassword = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -21,18 +19,18 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Simulate login - in real app, this would connect to Supabase
+    // Simulate password reset request
     setTimeout(() => {
-      if (email && password) {
+      if (email) {
         toast({
-          title: "Welcome back!",
-          description: "You've been successfully signed in.",
+          title: "Reset link sent!",
+          description: "Check your email for password reset instructions.",
         });
-        navigate("/dashboard");
+        navigate("/reset-password");
       } else {
         toast({
           title: "Error",
-          description: "Please fill in all fields.",
+          description: "Please enter your email address.",
           variant: "destructive",
         });
       }
@@ -55,12 +53,12 @@ const Login = () => {
           </Link>
         </div>
 
-        {/* Login Form */}
+        {/* Reset Password Form */}
         <Card className="shadow-large border-0 mx-auto">
           <CardHeader className="text-center px-4 sm:px-6">
-            <CardTitle className="text-xl sm:text-2xl">Welcome back</CardTitle>
+            <CardTitle className="text-xl sm:text-2xl">Reset Password</CardTitle>
             <CardDescription className="text-sm sm:text-base">
-              Sign in to get OUI information and assistance
+              Enter your email address and we'll send you a link to reset your password
             </CardDescription>
           </CardHeader>
           <CardContent className="px-4 sm:px-6">
@@ -77,43 +75,6 @@ const Login = () => {
                   className="text-sm sm:text-base"
                 />
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm">Password</Label>
-                <div className="relative">
-                  <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="text-sm sm:text-base pr-10"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="text-right">
-                <Link 
-                  to="/forgot-password" 
-                  className="text-sm text-accent hover:text-accent-hover font-medium"
-                >
-                  Forgot your password?
-                </Link>
-              </div>
 
               <Button 
                 type="submit" 
@@ -121,22 +82,23 @@ const Login = () => {
                 variant="default"
                 disabled={loading}
               >
-                {loading ? "Signing in..." : "Sign in"}
+                {loading ? "Sending..." : "Send Reset Link"}
               </Button>
             </form>
 
             <div className="mt-4 sm:mt-6 text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
-              <Link to="/signup" className="text-accent hover:text-accent-hover font-medium">
-                Sign up
+              <span className="text-muted-foreground">Remember your password? </span>
+              <Link to="/login" className="text-accent hover:text-accent-hover font-medium">
+                Sign in
               </Link>
             </div>
           </CardContent>
         </Card>
 
         <div className="text-center text-sm text-muted-foreground">
-          <Link to="/" className="hover:text-foreground">
-            ← Back to home
+          <Link to="/login" className="hover:text-foreground inline-flex items-center gap-1">
+            <ArrowLeft className="h-4 w-4" />
+            Back to login
           </Link>
         </div>
       </div>
@@ -144,4 +106,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;
