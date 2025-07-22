@@ -44,8 +44,6 @@ const SignInPage = () => {
       navigate("/chat");
     },
     onError: (error) => {
-      console.log("Login failed:", error);
-
       // Try to extract error message from AxiosError, fallback to default
       const errorMessage =
         (error as any)?.response?.data?.detail ||
@@ -61,10 +59,12 @@ const SignInPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
 
     if (isPending) {
       return;
     }
+
     if (!formData.username || !formData.password) {
       toast({
         title: "Error",

@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 
-type ICookieName = "token" | "profile";
+type ICookieName = "token" | "profile" | "user_type";
 
 interface ICookie {
   name: ICookieName;

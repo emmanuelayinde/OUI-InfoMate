@@ -5,8 +5,10 @@ import {
   Menu,
   MessageSquare,
   Send,
+  Settings,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 import { getAIResponseApi, getChatMessagesApi } from "@/api";
 import { ChatSidebar, Loader } from "@/components";
@@ -15,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { useChatStore } from "@/store";
+import { useAuthStore, useChatStore } from "@/store";
 import { CreateChatRequest } from "@/types";
 import { formatMarkdown } from "@/utils/markdown";
 
@@ -44,6 +46,7 @@ const ChatPage = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { toast } = useToast();
+  const { userType } = useAuthStore();
   const {
     activeChatId,
     getActiveChat,
@@ -202,7 +205,15 @@ const ChatPage = () => {
                       AI Assistant for OUI Students
                     </p>
                   </div>
-                  <div className="hidden md:flex">
+                  <div className="hidden md:flex items-center space-x-2">
+                    {userType === "admin" && (
+                      <Link to="/admin">
+                        <Button variant="outline" size="sm">
+                          <Settings className="h-4 w-4 mr-2" />
+                          Admin
+                        </Button>
+                      </Link>
+                    )}
                     <ThemeToggle />
                   </div>
                 </div>
@@ -359,7 +370,15 @@ const ChatPage = () => {
                     AI Assistant for OUI Students
                   </p>
                 </div>
-                <div className="hidden md:flex">
+                <div className="hidden md:flex items-center space-x-2">
+                  {userType === "admin" && (
+                    <Link to="/admin">
+                      <Button variant="outline" size="sm">
+                        <Settings className="h-4 w-4 mr-2" />
+                        Admin
+                      </Button>
+                    </Link>
+                  )}
                   <ThemeToggle />
                 </div>
               </div>

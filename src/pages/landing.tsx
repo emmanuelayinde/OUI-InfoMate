@@ -3,6 +3,7 @@ import {
   ChevronRight,
   Clock,
   GraduationCap,
+  Settings,
   Sparkles,
   Target,
 } from "lucide-react";
@@ -15,7 +16,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAuthStore } from "@/store";
 
 const LandingPage = () => {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, userType } = useAuthStore();
 
   return (
     <div className="min-h-screen bg-background">
@@ -31,11 +32,21 @@ const LandingPage = () => {
           <div className="flex items-center space-x-2 md:space-x-4">
             <ThemeToggle />
             {isAuthenticated ? (
-              <Link to="/chat">
-                <Button variant="ghost" size="sm" className="text-sm">
-                  Chat
-                </Button>
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Link to="/chat">
+                  <Button variant="ghost" size="sm" className="text-sm">
+                    Chat
+                  </Button>
+                </Link>
+                {userType === "admin" && (
+                  <Link to="/admin">
+                    <Button variant="outline" size="sm" className="text-sm">
+                      <Settings className="h-4 w-4 mr-1" />
+                      Admin
+                    </Button>
+                  </Link>
+                )}
+              </div>
             ) : (
               <Link to="/login">
                 <Button variant="ghost" size="sm" className="text-sm">

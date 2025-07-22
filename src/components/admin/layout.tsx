@@ -1,27 +1,100 @@
-
-import { useAuthStore } from "@/store";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { LogOut, Settings } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { useAuthStore } from "@/store";
+import { Lock, LogOut, Settings, UserX } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-  const { userProfile, isAuthenticated, logout } = useAuthStore();
-  const navigate = useNavigate();
+  const { userProfile, isAuthenticated, userType, logout } = useAuthStore();
 
-  useEffect(() => {
-    if (!isAuthenticated || !userProfile?.is_admin) {
-      navigate("/", { replace: true });
-    }
-  }, [isAuthenticated, userProfile, navigate]);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
     navigate("/");
   };
 
-  if (!isAuthenticated || !userProfile?.is_admin) {
-    return null;
+  const handleGoToHome = () => {
+    navigate("/");
+  };
+
+  const handleGoToLogin = () => {
+    navigate("/login");
+  };
+
+  const handleGoToChat = () => {
+    navigate("/chat");
+  };
+
+  // If user is not authenticated
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-6 text-center">
+            <UserX className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+            <h2 className="text-xl font-semibold mb-2">
+              Authentication Required
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              You need to be logged in to access the admin dashboard.
+            </p>
+            <div className="space-y-3">
+              <Button onClick={handleGoToLogin} className="w-full">
+                Sign In
+              </Button>
+              <Button
+                onClick={handleGoToHome}
+                variant="outline"
+                className="w-full"
+              >
+                Go to Home
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // If user is authenticated but not admin
+  if (userType !== "admin") {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-6 text-center">
+            <Lock className="h-12 w-12 mx-auto mb-4 text-yellow-500" />
+            <h2 className="text-xl font-semibold mb-2">Access Restricted</h2>
+            <p className="text-muted-foreground mb-2">
+              Welcome, {userProfile?.first_name} {userProfile?.last_name}!
+            </p>
+            <p className="text-muted-foreground mb-6">
+              You don't have admin privileges to access this dashboard.
+            </p>
+            <div className="space-y-3">
+              <Button onClick={handleGoToChat} className="w-full">
+                Go to Chat
+              </Button>
+              <Button
+                onClick={handleGoToHome}
+                variant="outline"
+                className="w-full"
+              >
+                Go to Home
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="ghost"
+                className="w-full flex items-center justify-center space-x-2"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -53,9 +126,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {children}
-      </main>
+      <main className="container mx-auto px-4 py-8">{children}</main>
     </div>
   );
 };

@@ -1,8 +1,8 @@
-
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getSystemPromptApi, updateSystemPromptApi, getSystemPromptHistoryApi } from "@/api";
+
+import { getSystemPromptApi, updateSystemPromptApi } from "@/api";
 import { useToast } from "@/hooks/use-toast";
-import { IUpdateSystemPromptRequest } from "@/types";
+import { ISystemPrompt } from "@/types";
 
 export const useSystemPrompt = () => {
   const { toast } = useToast();
@@ -11,25 +11,16 @@ export const useSystemPrompt = () => {
   const {
     data: systemPrompt,
     isLoading,
-    error
+    error,
   } = useQuery({
     queryKey: ["systemPrompt"],
-    queryFn: getSystemPromptApi,
-  });
-
-  const {
-    data: promptHistory,
-    isLoading: isHistoryLoading
-  } = useQuery({
-    queryKey: ["systemPromptHistory"],
-    queryFn: getSystemPromptHistoryApi,
+    queryFn: async () => await getSystemPromptApi(),
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: IUpdateSystemPromptRequest) => updateSystemPromptApi(data),
+    mutationFn: (data: ISystemPrompt) => updateSystemPromptApi(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["systemPrompt"] });
-      queryClient.invalidateQueries({ queryKey: ["systemPromptHistory"] });
       toast({
         title: "System prompt updated",
         description: "The system prompt has been successfully updated.",
@@ -47,9 +38,7 @@ export const useSystemPrompt = () => {
 
   return {
     systemPrompt,
-    promptHistory,
     isLoading,
-    isHistoryLoading,
     error,
     updateSystemPrompt: updateMutation.mutateAsync,
     isUpdating: updateMutation.isPending,

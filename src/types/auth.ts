@@ -1,4 +1,3 @@
-
 export interface ILoginCredentials {
   username: string;
   password: string;
@@ -27,27 +26,18 @@ export interface IUserProfile {
 export interface IAuthToken {
   access_token: string;
   token_type: string;
+  user_type: "student" | "admin";
 }
 
 export interface IAuth {
   isAuthenticated: boolean;
   userProfile: IUserProfile | null;
+  userType: "student" | "admin" | null;
   setUserProfile: (profile: IUserProfile) => void;
   login: (token: IAuthToken) => void;
   logout: () => void;
 }
 
 export interface ISystemPrompt {
-  id: number;
-  content: string;
-  version: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-  created_by: number;
-}
-
-export interface IUpdateSystemPromptRequest {
-  content: string;
-  version?: string;
+  prompt: string;
 }
