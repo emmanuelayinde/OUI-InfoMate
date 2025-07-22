@@ -341,7 +341,7 @@ const ChatPage = () => {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center border-4 border-red-500">
+            <div className="flex-1 flex items-center justify-center">
               <div className="text-center flex flex-col items-center space-y-4">
                 <Loader />
                 <p className="text-lg text-muted-foreground mt-4">
