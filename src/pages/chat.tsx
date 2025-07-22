@@ -1,13 +1,6 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  GraduationCap,
-  Lightbulb,
-  Menu,
-  MessageSquare,
-  Send,
-  Settings,
-} from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { GraduationCap, Lightbulb, Menu, Send, Settings } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { getAIResponseApi, getChatMessagesApi } from "@/api";
@@ -23,28 +16,28 @@ import { formatMarkdown } from "@/utils/markdown";
 
 // Pre-defined questions for OUI students
 const preQuestions = [
-  "What are the admission requirements for OUI?",
-  "How can I check my academic result online?",
-  "What is the current school calendar for this session?",
-  "How do I register for courses online?",
-  "What are the available scholarship opportunities?",
-  "How can I contact my academic advisor?",
-  "What is the process for hostel accommodation?",
-  "How do I pay my school fees online?",
-  "What are the graduation requirements for my program?",
-  "How can I access the digital library resources?",
-  "What support services are available for students?",
-  "How do I apply for industrial training placement?",
+  "What are the undergraduate admission requirements at Oduduwa University?",
+  "Can you provide the academic calendar for the current session?",
+  "What courses and faculties are available at OUI?",
+  "How much is the tuition for Computer Engineering or Mechanical Engineering?",
+  "What is the hostel allocation procedure and hostel fees?",
+  "How do I contact the admissions office at OUI?",
+  "What is the vision and mission of Oduduwa University?",
+  "What are the requirements for Direct Entry admission?",
+  "How do I pay school fees and what is the breakdown for Natural and Applied Sciences?",
+  "What is the official email address and phone number for OUI?",
+  "What are the objectives and philosophy of Oduduwa University?",
+  "Is there an exemption fee for students not staying in the school hostel?",
 ];
 
 // Helper function to format date for grouping
 
 const ChatPage = () => {
   const [message, setMessage] = useState("");
-  const [shouldRefetchHistory, setShouldRefetchHistory] = useState(false);
   const [selectedQuestions, setSelectedQuestions] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const queryClient = useQueryClient();
   const { toast } = useToast();
   const { userType } = useAuthStore();
   const {
@@ -52,14 +45,15 @@ const ChatPage = () => {
     getActiveChat,
     isSidebarOpen,
     toggleChatSidebar,
+    activeChatFromHistory,
     updateChat,
   } = useChatStore();
 
   // Get 3 random pre-questions on component mount
-  useState(() => {
+  useEffect(() => {
     const shuffled = [...preQuestions].sort(() => 0.5 - Math.random());
     setSelectedQuestions(shuffled.slice(0, 3));
-  });
+  }, []); // Empty dependency array ensures this runs only once
 
   const currentChat = getActiveChat();
 
@@ -91,12 +85,8 @@ const ChatPage = () => {
         request.chat_id ? request.chat_id.toString() : null
       ),
     onSuccess: (data) => {
-      if (!activeChatId) {
-        setShouldRefetchHistory(true);
-        setTimeout(() => {
-          setShouldRefetchHistory(false);
-        }, 500);
-      }
+      // invalid queries to refetch chat history
+      queryClient.invalidateQueries({ queryKey: ["chatHistory"] });
 
       updateChat(data?.chat_id.toString(), data);
       setMessage("");
@@ -119,19 +109,25 @@ const ChatPage = () => {
   // Get Chat By ID
   const { data: chatData } = useQuery({
     queryKey: ["chatById", activeChatId],
-    queryFn: async () => await getChatMessagesApi(String(activeChatId)),
-    enabled: !!activeChatId,
+    queryFn: async () => await getChatMessagesApi(activeChatId),
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
+    enabled: !!activeChatId,
   });
 
-  console.log("Chat Data:", chatData);
+  // Memoize the updateChat function to prevent unnecessary re-renders
+  const handleUpdateChat = useCallback(
+    (chatId: string, chatData: any) => {
+      updateChat(chatId, chatData);
+    },
+    [updateChat]
+  );
 
   useEffect(() => {
-    if (chatData) {
-      updateChat(String(activeChatId), chatData);
+    if (chatData && activeChatId) {
+      handleUpdateChat(String(activeChatId), chatData);
     }
-  }, [chatData, activeChatId, updateChat]);
+  }, [chatData, activeChatId, handleUpdateChat]);
 
   const handleSendMessage = async () => {
     if (!message.trim()) return;
@@ -163,7 +159,7 @@ const ChatPage = () => {
     <div className="h-screen flex bg-background">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex w-80 border-r bg-muted/30 flex-col">
-        <ChatSidebar shouldRefetchHistory={shouldRefetchHistory} />
+        <ChatSidebar />
       </div>
 
       {/* Mobile Sidebar Overlay */}
@@ -175,7 +171,7 @@ const ChatPage = () => {
           />
           <div className="absolute left-0 top-0 h-full w-80 bg-background border-r shadow-lg">
             <div className="h-full flex flex-col">
-              <ChatSidebar shouldRefetchHistory={shouldRefetchHistory} />
+              <ChatSidebar />
             </div>
           </div>
         </div>
@@ -199,7 +195,8 @@ const ChatPage = () => {
                   </Button>
                   <div className="flex-1 min-w-0">
                     <h2 className="text-lg font-semibold truncate">
-                      {currentChat.title}?
+                      {activeChatFromHistory(activeChatId?.toString())?.title ||
+                        "Chat"}
                     </h2>
                     <p className="text-sm text-muted-foreground">
                       AI Assistant for OUI Students
@@ -222,7 +219,8 @@ const ChatPage = () => {
               {/* Messages */}
               <ScrollArea className="flex-1 p-4">
                 <div className="space-y-6 max-w-4xl mx-auto">
-                  {currentChat?.messages?.length === 0 ? (
+                  {!currentChat?.messages ||
+                  currentChat.messages.length === 0 ? (
                     <div className="text-center py-8 md:py-12">
                       <GraduationCap className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                       <h3 className="text-lg font-semibold mb-2">
@@ -255,7 +253,7 @@ const ChatPage = () => {
                       </div>
                     </div>
                   ) : (
-                    currentChat?.messages
+                    currentChat.messages
                       ?.filter((msg) => msg.role !== "system")
                       .sort((a, b) => a.id - b.id)
                       .map((msg) => (
@@ -305,7 +303,7 @@ const ChatPage = () => {
                         <div className="flex items-center space-x-2">
                           <Loader />
                           <span className="text-sm md:text-base">
-                            AI is thinking...
+                            Generating response...
                           </span>
                         </div>
                       </div>
@@ -343,15 +341,16 @@ const ChatPage = () => {
               </div>
             </>
           ) : (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="text-center">
-                <MessageSquare className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-lg text-muted-foreground">Chat not found</p>
+            <div className="flex-1 flex items-center justify-center border-4 border-red-500">
+              <div className="text-center flex flex-col items-center space-y-4">
+                <Loader />
+                <p className="text-lg text-muted-foreground mt-4">
+                  Loading chat...
+                </p>
               </div>
             </div>
           )
         ) : (
-          // New Chat Interface - No active chat ID
           <>
             {/* New Chat Header */}
             <div className="p-4 border-b bg-background">

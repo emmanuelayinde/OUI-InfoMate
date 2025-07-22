@@ -7,7 +7,7 @@ export const getChatsHistoryApi = async (): Promise<ChatsResponse> => {
 };
 
 export const getChatMessagesApi = async (
-  chatId: string
+  chatId: string | number
 ): Promise<ChatWithMessages> => {
   const response = await api.get(`/chats/${chatId}`);
   return response.data;
@@ -15,7 +15,7 @@ export const getChatMessagesApi = async (
 
 export const getAIResponseApi = async (
   message: string,
-  chatId: string | null = null
+  chatId: string | number | null = null
 ): Promise<ChatResponse> => {
   const response = await api.post(`/get_ai_response`, {
     chat_id: chatId,

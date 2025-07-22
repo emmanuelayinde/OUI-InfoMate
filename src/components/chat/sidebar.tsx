@@ -4,6 +4,7 @@ import {
   LogOut,
   MessageSquare,
   Plus,
+  Settings,
   User,
   X,
 } from "lucide-react";
@@ -16,7 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAuthStore, useChatStore } from "@/store";
 import { ChatHistory } from "@/types";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const formatDateGroup = (dateString: string) => {
   const date = new Date(dateString);
@@ -57,11 +58,7 @@ const groupChatsByDate = (chats: ChatHistory[]) => {
   return groups;
 };
 
-const Sidebar = ({
-  shouldRefetchHistory,
-}: {
-  shouldRefetchHistory: boolean;
-}) => {
+const Sidebar = () => {
   const navigate = useNavigate();
   const {
     createNewChat,
@@ -72,7 +69,7 @@ const Sidebar = ({
     closeChatSidebar,
     toggleChatSidebar,
   } = useChatStore();
-  const { userProfile, logout } = useAuthStore();
+  const { userProfile, logout, userType } = useAuthStore();
 
   const handleChatSelect = (chatId: string) => {
     setActiveChat(chatId);
@@ -86,7 +83,7 @@ const Sidebar = ({
   };
 
   // ================ API CALL ================
-  const { data: chats, refetch } = useQuery({
+  const { data: chats } = useQuery({
     queryKey: ["chatHistory"],
     queryFn: async () => await getChatsHistoryApi(),
   });
@@ -96,12 +93,6 @@ const Sidebar = ({
       setChatHistory(chats.chats);
     }
   }, [chats]);
-
-  useEffect(() => {
-    if (shouldRefetchHistory) {
-      refetch();
-    }
-  }, [shouldRefetchHistory]);
 
   return (
     <>
@@ -126,10 +117,20 @@ const Sidebar = ({
             </Button>
           </div>
         </div>
-        <Button onClick={createNewChat} className="w-full" variant="default">
-          <Plus className="h-4 w-4 mr-2" />
-          New Chat
-        </Button>
+        <div className="space-y-2">
+          <Button onClick={createNewChat} className="w-full" variant="default">
+            <Plus className="h-4 w-4 mr-2" />
+            New Chat
+          </Button>
+          {userType === "admin" && (
+            <Link to="/admin" className="block">
+              <Button variant="outline" className="w-full">
+                <Settings className="h-4 w-4 mr-2" />
+                Admin Dashboard
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Chat History */}
@@ -154,7 +155,7 @@ const Sidebar = ({
                           ? "bg-accent/20 border-accent"
                           : ""
                       }`}
-                      onClick={() => handleChatSelect(chat.id.toString())}
+                      onClick={() => handleChatSelect(chat?.id?.toString())}
                     >
                       <CardContent className="p-3">
                         <div className="flex items-start space-x-2">

@@ -37,6 +37,7 @@ export interface IChatState {
   chats: { [key: string]: ChatWithMessages };
   isSidebarOpen: boolean;
 
+  activeChatFromHistory: (chatId: string) => ChatHistory | null;
   toggleChatSidebar: () => void;
   openChatSidebar: () => void;
   closeChatSidebar: () => void;

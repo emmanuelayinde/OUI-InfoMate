@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAuthStore } from "@/store";
-import { Lock, LogOut, Settings, UserX } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Lock, LogOut, MessageSquare, Settings, UserX } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const { userProfile, isAuthenticated, userType, logout } = useAuthStore();
@@ -103,23 +103,37 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
+            <Link
+              to="/"
+              className="flex items-center space-x-2 hover:text-primary transition-colors cursor-pointer"
+            >
               <Settings className="h-6 w-6 text-primary" />
               <h1 className="text-xl font-bold">Admin Dashboard</h1>
-            </div>
+            </Link>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-muted-foreground">
                 Welcome, {userProfile.first_name} {userProfile.last_name}
               </span>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                className="flex items-center space-x-2"
-              >
-                <LogOut className="h-4 w-4" />
-                <span>Logout</span>
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleGoToChat}
+                  className="flex items-center space-x-2"
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  <span>Chat</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
